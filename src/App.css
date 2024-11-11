@@ -1,0 +1,24 @@
+.card-hover-effect {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover-effect:hover {
+  box-shadow: 0 0 15px rgb(25, 135, 84 ); /* Change color and intensity on hover */
+  transform: scale(1.1);
+}
+.list-group-item-dark {
+  background-color:#212529;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.list-group-item-dark:hover {
+  background-color: #28a745; /* Green for hover */
+  color: white;
+}
+
+.list-group-item-dark.active {
+  background-color: #28a745; /* Green for active state */
+  color: white;
+}
+
