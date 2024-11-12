@@ -137,7 +137,7 @@ function Movielist() {
   const goToPreviousPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
-    const handleToggleForm = () => {
+  const handleToggleForm = () => {
     setShowForm((prevShowForm) => !prevShowForm);
   };
   const handleCheckboxChange = (genre) => {
@@ -157,7 +157,7 @@ function Movielist() {
   }
 
   return (
-    <div className="bg-dark">
+    <div className="bg-dark pb-5">
       <Navbar expand="md" className="bg-dark navbar-dark">
         <Container fluid>
           <Navbar.Brand href="#" className="d-flex align-items-center">

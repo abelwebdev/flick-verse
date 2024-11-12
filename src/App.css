@@ -22,3 +22,8 @@
   color: white;
 }
 
+@media (max-width: 768px) {
+  .hero-section {
+    height: 100vh;
+  }
+}

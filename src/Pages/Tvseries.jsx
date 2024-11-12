@@ -76,7 +76,7 @@ function Tvseries() {
   };
 
   return (
-    <div className="bg-dark">
+    <div className="bg-dark pb-5">
       <Navbar expand="md" className="bg-dark navbar-dark">
         <Container fluid>
           <Navbar.Brand href="#" className="d-flex align-items-center">

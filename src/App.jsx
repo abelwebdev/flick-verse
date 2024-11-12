@@ -191,7 +191,7 @@ function App() {
   }, []);
   
   return (
-    <div className="bg-dark">
+    <div className="bg-dark pb-5">
       <Navbar expand="md" className="bg-dark navbar-dark">
         <Container fluid>
           <Navbar.Brand href="#" className="d-flex align-items-center">
@@ -219,7 +219,7 @@ function App() {
         {trendingmovies?.slice(0, 5).map(trendingmovie => (
           <Carousel.Item key={trendingmovie?.id}>
             <img
-              className="d-block w-100"
+              className="d-block w-100 hero-section"
               style={{ filter: 'brightness(0.5)', maxHeight: '90vh' }}
               src={`https://image.tmdb.org/t/p/original/${trendingmovie?.backdrop_path}`}
               onError={(e) => e.target.src = 'placeholder.svg'}

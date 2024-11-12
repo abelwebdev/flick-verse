@@ -13,8 +13,15 @@ function Search() {
 
   useEffect(() => {
     if (isSearchClicked) {
-      setIsSearchClicked(false); // Reset the trigger after running search
-      navigate(`/search/${searchQuery}`);
+      const isSearchQueryEmpty = searchQuery.trim() === '';
+      if (isSearchQueryEmpty) {
+        alert('Please enter a search query');
+        setIsSearchClicked(false); // Reset the trigger after running search
+        setSearchQuery('');
+      } else {
+        setIsSearchClicked(false); // Reset the trigger after running search
+        navigate(`/search/${searchQuery}`);
+      }
     }
   }, [isSearchClicked, navigate, searchQuery]);
 
