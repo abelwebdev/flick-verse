@@ -236,7 +236,7 @@ function Movielist() {
         {movies?.results?.map((movie, index) => (
           <Col key={index}>
             <Link to={`/movie/${movie.title.replace(/\s+/g, '-')}/${movie.id}`} onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}>
+            onMouseLeave={() => setIsHovered(false)} style={{ textDecoration: 'none'}}>
             <Card className="bg-dark text-light card-hover-effect" style={{ height: "350px", overflow: "hidden", borderRadius: "20px" }} 
             >
               <Card.Img

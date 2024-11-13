@@ -176,7 +176,7 @@ function SearchResult() {
     setLoading(false); // Stop loading regardless of success/failure
   }, [params.title]);
   return (
-    <div className="bg-dark">
+    <div className="bg-dark pb-5">
       <Navbar expand="md" className="bg-dark navbar-dark">
         <Container fluid>
           <Navbar.Brand href="#" className="d-flex align-items-center">
@@ -209,7 +209,7 @@ function SearchResult() {
               return (
                 <Col key={index}>
                   <Link to={`/movie/${movie?.title?.replace(/\s+/g, '-')}/${movie?.id}`} onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}>
+                    onMouseLeave={() => setIsHovered(false)} style={{ textDecoration: 'none'}}>
                     <Card className="bg-dark text-light card-hover-effect" style={{ height: "350px", overflow: "hidden", borderRadius: "20px" }}>
                       <Card.Img
                         variant="top"
@@ -254,44 +254,44 @@ function SearchResult() {
       <h6 className="mt-5 text-success text-center mx-3 display-6 mb-5"> Tv Series </h6>
 
       <Row xs={1} md={4} lg={6} className="g-4 mx-3">
-        
         {searchresult.map((tv, index) => {
           if('name' in tv) {
             return (
               <Col key={index}>
-            <Link to={`/tv/${tv?.name?.replace(/\s+/g, '-')}/${tv?.id}`} onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}>
-            <Card className="bg-dark text-light card-hover-effect" style={{ height: "350px", overflow: "hidden", borderRadius: "20px" }}>
-              <Card.Img
-                variant="top"
-                style={{ borderRadius: "20px 20px 0 0", objectFit: "cover", height: "150px" }}
-                src={`https://image.tmdb.org/t/p/w500/${tv?.backdrop_path}`}
-                onError={(e) => e.target.src = '/placeholder.svg'}
-              />
-              <Card.Body style={{ backgroundColor: "#2a2a2a", padding: "20px"}}>
-                <Card.Title className="text-light" style={{fontSize: "18px", fontWeight: "bold"}}>{tv?.name}</Card.Title>
-                <Card.Text className="text-light" style={{ fontSize: "14px", color: "#ccc"}}>
-                <Card.Subtitle className="text-light mb-2" style={{ fontSize: "14px", color: "#ccc" }}>
-                  <img width="15px" height="15px" src={'/star.png'}>
-                  </img>
-                  <span> {tv?.vote_average?.toFixed(1)} </span>
-                </Card.Subtitle>
-                </Card.Text>
-                <Card.Subtitle>
-                  {tv?.genre_ids?.slice(0, 2).map((genre_id) => {
-                    const item = genres.find((obj) => obj.id === genre_id);
-                    return item ? (
-                      tv?.genre_ids[tv?.genre_ids.slice(0, 2).length - 1] === genre_id ? (
-                        <span className="badge bg-primary mx-2 mt-1" key={genre_id}>{item.name}</span>
-                      ) : (
-                        <span className="badge bg-primary" key={genre_id}>{item.name}</span>
-                      )
-                    ) : null;
-                  })}
-                </Card.Subtitle>
-              </Card.Body>
-            </Card>
-          </Link>
+                <Link to={`/tv/${tv?.name?.replace(/\s+/g, '-')}/${tv?.id}`} onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)} style={{ textDecoration: 'none' }}>
+                  <Card className="bg-dark text-light card-hover-effect" style={{ height: "350px", overflow: "hidden", borderRadius: "20px" }}>
+                    <Card.Img
+                      variant="top"
+                      style={{ borderRadius: "20px 20px 0 0", objectFit: "cover", height: "150px" }}
+                      src={`https://image.tmdb.org/t/p/w500/${tv?.backdrop_path}`}
+                      onError={(e) => e.target.src = '/placeholder.svg'}
+                    />
+                    <Card.Body style={{ backgroundColor: "#2a2a2a", padding: "20px"}}>
+                      <Card.Title className="text-light" style={{fontSize: "18px", fontWeight: "bold"}}>{tv?.name}</Card.Title>
+                      <Card.Text className="text-light" style={{ fontSize: "14px", color: "#ccc"}}>
+                        {tv?.first_air_date?.substring(0, 4)}
+                      </Card.Text>
+                      <Card.Subtitle className="text-light mb-2" style={{ fontSize: "14px", color: "#ccc" }}>
+                        <img width="15px" height="15px" src={'/star.png'}>
+                        </img>
+                        <span> {tv?.vote_average?.toFixed(1)} </span>
+                      </Card.Subtitle>
+                      <Card.Subtitle>
+                        {tv?.genre_ids?.slice(0, 2).map((genre_id) => {
+                          const item = genres.find((obj) => obj.id === genre_id);
+                          return item ? (
+                            tv?.genre_ids[tv?.genre_ids.slice(0, 2).length - 1] === genre_id ? (
+                              <span className="badge bg-primary mx-2 mt-1" key={genre_id}>{item.name}</span>
+                            ) : (
+                              <span className="badge bg-primary" key={genre_id}>{item.name}</span>
+                            )
+                          ) : null;
+                        })}
+                      </Card.Subtitle>
+                    </Card.Body>
+                  </Card>
+                </Link>
               </Col>
             )
           } else {
