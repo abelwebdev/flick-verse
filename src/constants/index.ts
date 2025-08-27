@@ -42,23 +42,23 @@ export const themeOptions: ITheme[] = [
 
 export const sections = [
   {
-    title: "Trending movies",
+    title: "Movies",
     category: "movie",
     type: "popular",
   },
+  // {
+  //   title: "Top rated movies",
+  //   category: "movie",
+  //   type: "top_rated",
+  // },
   {
-    title: "Top rated movies",
-    category: "movie",
-    type: "top_rated",
-  },
-  {
-    title: "Trending series",
+    title: "Series",
     category: "tv",
     type: "popular",
   },
-  {
-    title: "Top rated series",
-    category: "tv",
-    type: "top_rated",
-  },
+  // {
+  //   title: "Top rated series",
+  //   category: "tv",
+  //   type: "top_rated",
+  // },
 ];

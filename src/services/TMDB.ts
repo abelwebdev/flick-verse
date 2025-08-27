@@ -17,6 +17,9 @@ export const tmdbApi = createApi({
     getTrendingMovies: builder.query({
       query: () => `/3/movie/popular?language=en-US&page=1`,
     }),
+    getTrendingTvSeries: builder.query({
+      query: () => `/3/tv/popular?language=en-US&page=1`,
+    }),
 
     // getShows: builder.query({
     //   query: ({
@@ -53,4 +56,4 @@ export const tmdbApi = createApi({
   }),
 });
 
-export const { useGetTrendingMoviesQuery, useGetShowQuery } = tmdbApi;
+export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetShowQuery } = tmdbApi;

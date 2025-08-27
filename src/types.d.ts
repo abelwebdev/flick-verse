@@ -11,8 +11,13 @@ export interface IMovie {
   id: string;
   poster_path: string;
   original_title: string;
+  title?: string;
   name: string;
   overview: string;
   backdrop_path: string
+  vote_average?: number;
+  release_date?: string;
+  first_air_date?: string;
+  genre_ids?: number[];
 }
 

@@ -77,14 +77,14 @@ const Section: FC<SectionProps> = ({
           </Link>
         )}
       </div>
-      <div className="sm:h-[312px] xs:h-[309px] h-[266px]">
+      <div>
         {isLoading ? (
           <SkelatonLoader />
         ) : isError ? (
           <Error error={String(errorMessage)} className="h-full text-[18px]" />
         ) : (
           <MoviesSlides
-            movies={data.results.slice(0, 10)}
+            movies={data.results?.slice(0, 20)}
             category={category}
           />
         )}
