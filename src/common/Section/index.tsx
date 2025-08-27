@@ -1,19 +1,15 @@
-import { memo, FC, useRef } from "react";
+import { memo, FC } from "react";
 import { Link } from "react-router-dom";
-import { useInView } from "framer-motion";
 
 import MoviesSlides from "./MoviesSlides";
-import { SkelatonLoader } from "../Loader";
-import Error from "../Error";
-
-import { useGetTrendingMoviesQuery } from "@/services/TMDB";
 import { useTheme } from "@/context/themeContext";
-import { cn, getErrorMessage } from "@/utils/helper";
+import { cn } from "@/utils/helper";
 
 interface SectionProps {
   title: string;
   category: string;
   className?: string;
+  data?: { results?: any[] };
   type?: string;
   id?: number;
   showSimilarShows?: boolean;
@@ -23,37 +19,13 @@ const Section: FC<SectionProps> = ({
   title,
   category,
   className,
+  data: initialData,
   type,
   id,
   showSimilarShows,
 }) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const inView = useInView(ref, {
-    margin: "420px",
-    once: true,
-  });
-
   const { theme } = useTheme();
-
-  const {
-    data = { results: [] },
-    isLoading,
-    isError,
-    error,
-  } = useGetTrendingMoviesQuery(
-    {
-      category,
-      type,
-      page: 1,
-      showSimilarShows,
-      id,
-    },
-    {
-      skip: !inView,
-    }
-  );
-
-  const errorMessage = isError ? getErrorMessage(error) : "";
+  const hasInitialData = Boolean(initialData && initialData.results);
 
   const sectionStyle = cn(
     `sm:py-[20px] xs:py-[18.75px] py-[16.75px] font-nunito`,
@@ -65,7 +37,7 @@ const Section: FC<SectionProps> = ({
   );
 
   return (
-    <section className={sectionStyle} ref={ref}>
+    <section className={sectionStyle}>
       <div className="flex flex-row justify-between items-center mb-[22.75px]">
         <div className=" relative">
           <h3 className="sm:text-[22.25px] xs:text-[20px] text-[18.75px] dark:text-gray-50 sm:font-bold font-semibold">{title}</h3>
@@ -78,16 +50,7 @@ const Section: FC<SectionProps> = ({
         )}
       </div>
       <div>
-        {isLoading ? (
-          <SkelatonLoader />
-        ) : isError ? (
-          <Error error={String(errorMessage)} className="h-full text-[18px]" />
-        ) : (
-          <MoviesSlides
-            movies={data.results?.slice(0, 20)}
-            category={category}
-          />
-        )}
+        <MoviesSlides movies={(hasInitialData ? (initialData!.results ?? []) : []).slice(0, 20) as any} category={category} />
       </div>
     </section>
   );

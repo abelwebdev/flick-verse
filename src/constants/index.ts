@@ -46,19 +46,9 @@ export const sections = [
     category: "movie",
     type: "popular",
   },
-  // {
-  //   title: "Top rated movies",
-  //   category: "movie",
-  //   type: "top_rated",
-  // },
   {
     title: "Series",
     category: "tv",
     type: "popular",
   },
-  // {
-  //   title: "Top rated series",
-  //   category: "tv",
-  //   type: "top_rated",
-  // },
 ];

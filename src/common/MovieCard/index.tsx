@@ -12,8 +12,10 @@ const MovieCard = ({
   movie: IMovie;
   category: string;
 }) => {
-  const { poster_path, original_title: title, name, id, vote_average, release_date, first_air_date, genre_ids } = movie;
-  const primaryTitle = (title?.length ? title : movie.title) || name;
+  const { poster_path, original_title, original_name, title, name, id, vote_average, release_date, first_air_date, genre_ids } = movie;
+  const primaryTitle = category === "movie"
+    ? (title || original_title || name || original_name || "")
+    : (name || original_name || title || original_title || "");
   const year = (release_date || first_air_date || "").slice(0, 4);
   const genreMap: Record<number, string> = {
     28: "Action",
@@ -61,7 +63,7 @@ const MovieCard = ({
           height={!isMobile ? 300 : 260}
           width={200}
           src={`https://image.tmdb.org/t/p/original/${poster_path}`}
-          alt={movie.original_title}
+          alt={primaryTitle}
           className="object-cover rounded-lg drop-shadow-md shadow-md group-hover:shadow-none group-hover:drop-shadow-none transition-all duration-300 ease-in-out"
           effect="zoomIn"
         />

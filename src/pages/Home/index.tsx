@@ -1,34 +1,48 @@
 import { Loader, Error, Section } from "@/common";
 import { Hero } from "./components";
 
-import { useGetTrendingMoviesQuery } from "@/services/TMDB";
+import { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery } from "@/services/TMDB";
 import { maxWidth } from "@/styles";
 import { sections } from "@/constants";
 import { cn } from "@/utils/helper";
 
 const Home = () => {
-  const { data, isLoading, isError } = useGetTrendingMoviesQuery({
+  const { data: movie, isLoading: isMovieLoading, isError: isMovieError } = useGetTrendingMoviesQuery({
     category: "movie",
     type: "popular",
     page: 1,
   });
+  const { data: tv, isLoading: isTvLoading, isError: isTvError } = useGetTrendingTvSeriesQuery({
+    category: "tv",
+    type: "popular",
+    page: 1,
+  })
 
-  if (isLoading) {
+  if (isMovieLoading) {
     return <Loader />;
   }
-
-  if (isError) {
+  if (isTvLoading) {
+    return <Loader />
+  }
+  if (isMovieError) {
     return <Error error="Unable to fetch the movies! " />;
   }
+  if (isTvError) {
+    return <Error error="Unable to fetch the series! " />;
+  }
 
-  const popularMovies = data?.results.slice(0, 5);
+  const popularMovies = movie?.results.slice(0, 5);
 
   return (
     <>
       <Hero movies={popularMovies} />
       <div className={cn(maxWidth, "lg:mt-12 md:mt-8 sm:mt-6 xs:mt-4 mt-2")}>
         {sections.map(({ title, category, type }) => (
-          <Section title={title} category={category} type={type} key={title} />
+          title === "Movies" ? (
+            <Section title={title} category={category} type={type} data={movie} key={title} />
+          ) : (
+            <Section title={title} category={category} type={type} data={tv} key={title} />
+          )
         ))}
       </div>
     </>
