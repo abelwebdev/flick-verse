@@ -61,7 +61,7 @@ const Header = () => {
   return (
     <header
       className={cn(
-        `md:py-[16px] py-[14.5px]  fixed top-0 left-0 w-full z-10 transition-all duration-50`,
+        `md:py-[16px] py-[14.5px]  fixed top-0 left-0 w-full z-[60] transition-all duration-50`,
         isActive && (theme === "Dark" ? "header-bg--dark" : "header-bg--light")
       )}
     >

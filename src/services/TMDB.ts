@@ -51,7 +51,8 @@ export const tmdbApi = createApi({
 
     getShow: builder.query({
       query: ({ category, id }: { category: string; id: number }) =>
-        `${category}/${id}?append_to_response=videos,credits&api_key=${API_KEY}`,
+        // `${category}/${id}?append_to_response=videos,credits&api_key=${API_KEY}`,
+      `/3/movie/${id}?language=en-US`,
     }),
   }),
 });

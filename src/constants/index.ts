@@ -9,11 +9,6 @@ import { ITheme, INavLink } from "../types";
 
 export const navLinks: INavLink[] = [
   {
-    title: "home",
-    path: "/",
-    icon: AiOutlineHome,
-  },
-  {
     title: "movies",
     path: "/movie",
     icon: TbMovie,

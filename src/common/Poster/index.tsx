@@ -14,12 +14,12 @@ interface PosterPropsType {
 const Poster = ({ posterPath, title, className }: PosterPropsType) => {
   const { zoomIn } = useMotion();
   return (
-    <div className={cn(`md:block hidden `, className)}>
+    <div className={cn(`block`, className)}>
       <m.div
         variants={zoomIn(0.6, 0.8)}
         initial="hidden"
         animate="show"
-        className="h-[380px] w-[254px]"
+        className="md:h-[380px] md:w-[254px] xs:h-[340px] xs:w-[230px] h-[300px] w-[200px]"
       >
         <Image
           width={254}
