@@ -58,11 +58,15 @@ const Header = () => {
     }
   }, [location.pathname]);
 
+  const isDetailPage = location.pathname.split("/").length === 3;
+
   return (
     <header
       className={cn(
         `md:py-[16px] py-[14.5px]  fixed top-0 left-0 w-full z-[60] transition-all duration-50`,
-        isActive && (theme === "Dark" ? "header-bg--dark" : "header-bg--light")
+        isDetailPage
+          ? `dark:bg-black bg-mainColor`
+          : isActive && (theme === "Dark" ? "header-bg--dark" : "header-bg--light")
       )}
     >
       <nav
@@ -72,7 +76,7 @@ const Header = () => {
           logoColor={cn(
             isNotFoundPage
               ? "text-black dark:text-primary"
-              : !isNotFoundPage && isActive
+              : !isNotFoundPage && (isActive || isDetailPage)
               ? "text-black dark:text-primary"
               : "text-primary"
           )}
@@ -86,7 +90,7 @@ const Header = () => {
                   key={link.title}
                   link={link}
                   isNotFoundPage={isNotFoundPage}
-                  showBg={isActive}
+                  showBg={isActive || isDetailPage}
                 />
               );
             })}
@@ -100,7 +104,7 @@ const Header = () => {
               id="theme"
               className={cn(
                 `flex items-center justify-center mb-[2px] transition-all duration-100 hover:scale-110`,
-                isNotFoundPage || isActive
+                isNotFoundPage || isActive || isDetailPage
                   ? ` ${textColor} dark:hover:text-secColor hover:text-black `
                   : ` dark:hover:text-secColor text-gray-300 `
               )}
@@ -118,7 +122,7 @@ const Header = () => {
           name="menu"
           className={cn(
             `inline-block text-[22.75px] md:hidden  transition-all duration-300`,
-            isNotFoundPage || isActive
+            isNotFoundPage || isActive || isDetailPage
               ? `${textColor} dark:hover:text-secColor hover:text-black `
               : ` dark:hover:text-secColor text-secColor`
           )}

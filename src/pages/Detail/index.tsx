@@ -10,6 +10,7 @@ import { useMotion } from "@/hooks/useMotion";
 import { mainHeading, maxWidth, paragraph } from "@/styles";
 import { cn } from "@/utils/helper";
 import { useTheme } from "@/context/themeContext";
+import { getServerUrls, ServerUrlItem } from "@/utils/urls";
 
 const Detail = () => {
   const { category, id } = useParams();
@@ -22,6 +23,10 @@ const Detail = () => {
   });
   const { theme } = useTheme();
   const isDark = theme === "Dark";
+  const servers: ServerUrlItem[] = getServerUrls(String(id));
+  const [activeServerKey, setActiveServerKey] = useState<string>(servers[0]?.key || "vidsrc");
+  const activeServerUrl =
+    servers.find((s) => s.key === activeServerKey)?.url || servers[0]?.url;
 
   useEffect(() => {
     document.title =
@@ -62,40 +67,48 @@ const Detail = () => {
       ? episode_run_time[0]
       : undefined;
   const displayRating = typeof vote_average === "number" ? vote_average.toFixed(1) : undefined;
-  const serverUrls = {
-    vidsrc: `https://vidsrc.icu/embed/movie/${id}?autoplay=1&muted=1`,
-    "2embed": `https://2embed.cc/embed/${id}`,
-    multiembed: `https://multiembed.mov/?video_id=${id}&tmdb=1`,
-    moviesapi: `https://moviesapi.club/movie/${id}`,
-    autoembed: `https://autoembed.co/movie/tmdb/${id}`,
-  };
+  
 
-  const backgroundStyle = isDark
-    ? {
-        backgroundImage: `linear-gradient(to top, rgba(0,0,0), rgba(0,0,0,0.98), rgba(0,0,0,0.8), rgba(0,0,0,0.4)), url('https://image.tmdb.org/t/p/original/${posterPath}'`,
-        backgroundPosition: "top",
-        backgroundSize: "cover",
-      }
-    : {
-        backgroundImage: `linear-gradient(to top, rgba(255,255,255,0.96), rgba(255,255,255,0.92), rgba(255,255,255,0.85), rgba(255,255,255,0.6)), url('https://image.tmdb.org/t/p/original/${posterPath}'`,
-        backgroundPosition: "top",
-        backgroundSize: "cover",
-      };
+  const lightBackgroundStyle = {
+    backgroundImage: `linear-gradient(to top, rgba(255,255,255,0.96), rgba(255,255,255,0.92), rgba(255,255,255,0.85), rgba(255,255,255,0.6)), url('https://image.tmdb.org/t/p/original/${posterPath}'`,
+    backgroundPosition: "top",
+    backgroundSize: "cover",
+  } as const;
 
   return (
     <>
-      <section className="w-full relative z-0" style={backgroundStyle}>
-        <div className="relative md:order-1 order-2 w-full z-0" style={{ paddingTop: '100vh' }}>
+      <section className="w-full relative z-0 pt-[50px] md:pt-[60px] dark:bg-black bg-mainColor" style={isDark ? undefined : lightBackgroundStyle}>
+        <div className="relative md:order-1 order-2 w-full z-0 h-[calc(100vh-60px)] md:h-[calc(100vh-60px)]">
           <iframe
-            src={serverUrls.multiembed}
-            className="absolute inset-0 w-full h-full pointer-events-none"
+            src={activeServerUrl}
+            className="absolute inset-0 w-full h-full"
             style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
             allow="autoplay; encrypted-media"
             allowFullScreen
             title="Movie Player"
           ></iframe>
         </div>
-        <div className={`${maxWidth} lg:py-36 sm:py-[136px] sm:pb-28 xs:py-10 xs:pb-10 pt-8 pb-8 flex md:flex-row flex-col lg:gap-12 md:gap-10 gap-6 items-center md:items-start justify-center md:order-2 order-1 relative z-10`}>
+        <div className={cn(maxWidth, "w-full mt-3 md:mt-4 flex items-center justify-center")}> 
+          <label htmlFor="server-select" className={cn("mr-2 text-sm", isDark ? "text-gray-200" : "text-gray-700")}>Server:</label>
+          <select
+            id="server-select"
+            value={activeServerKey}
+            onChange={(e) => setActiveServerKey(e.target.value)}
+            className={cn(
+              "px-3 py-2 rounded border text-sm outline-none",
+              isDark
+                ? "bg-gray-900 border-gray-700 text-gray-100 focus:border-secColor"
+                : "bg-white border-gray-300 text-gray-800 focus:border-black"
+            )}
+          >
+            {servers.map((server) => (
+              <option key={server.key} value={server.key}>
+                {server.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={`${maxWidth} pt-2 md:pt-5 mt-5 lg:pt-4 sm:pb-28 xs:pb-10 pb-8 flex md:flex-row flex-col lg:gap-12 md:gap-10 gap-6 items-center md:items-start justify-center md:order-2 order-1 relative z-10`}>
           <Poster title={title} posterPath={posterPath} />
           <m.div
             variants={staggerContainer(0.2, 0.4)}
