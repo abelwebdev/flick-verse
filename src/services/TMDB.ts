@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-import { API_KEY, API_BEARER } from "@/utils/config";
+import { API_BEARER } from "@/utils/config";
 
 export const tmdbApi = createApi({
   reducerPath: "tmdbApi",
@@ -20,7 +20,6 @@ export const tmdbApi = createApi({
     getTrendingTvSeries: builder.query({
       query: () => `/3/tv/popular?language=en-US&page=1`,
     }),
-
     // getShows: builder.query({
     //   query: ({
     //     category,
@@ -48,13 +47,17 @@ export const tmdbApi = createApi({
     //     return `${category}/${type}?api_key=${API_KEY}&page=${page}`;
     //   },
     // }),
-
-    getShow: builder.query({
-      query: ({ category, id }: { category: string; id: number }) =>
-        // `${category}/${id}?append_to_response=videos,credits&api_key=${API_KEY}`,
-      `/3/movie/${id}?language=en-US`,
+    getMovie: builder.query({
+      query: ({ category, id }: { category: string; id: number }) => `/3/movie/${id}?language=en-US`,
+    }),
+    getTv: builder.query({
+      query: ({ category, id }: {category: string; id: number }) => `/3/tv/${id}?language=en-US`,
+    }),
+    getSeasonEpisodes: builder.query({
+      query: ({ id, season_number }: { id: string; season_number: number }) =>
+        `/3/tv/${id}/season/${season_number}?language=en-US`,
     }),
   }),
 });
 
-export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetShowQuery } = tmdbApi;
+export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery } = tmdbApi;

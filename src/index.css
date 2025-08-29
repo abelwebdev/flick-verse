@@ -217,3 +217,17 @@ body {
       -0.5em -1em rgba(233, 169, 32, 0.75);
   }
 }
+
+@keyframes scroll-text {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.hover\:animate-scroll-text:hover {
+  animation: scroll-text 6s linear infinite;
+}
+

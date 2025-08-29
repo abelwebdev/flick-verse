@@ -39,9 +39,9 @@ const Home = () => {
       <div className={cn(maxWidth, "lg:mt-12 md:mt-8 sm:mt-6 xs:mt-4 mt-2")}>
         {sections.map(({ title, category, type }) => (
           title === "Movies" ? (
-            <Section title={title} category={category} type={type} data={movie} key={title} />
+            <Section title={title} category={category} type={"movie"} data={movie} key={title} />
           ) : (
-            <Section title={title} category={category} type={type} data={tv} key={title} />
+            <Section title={title} category={category} type={"tv"} data={tv} key={title} />
           )
         ))}
       </div>
