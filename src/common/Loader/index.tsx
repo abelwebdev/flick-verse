@@ -1,6 +1,7 @@
 import { memo, FC } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { useMediaQuery } from "usehooks-ts";
+import { FaSpinner } from "react-icons/fa";
 
 import { useTheme } from "@/context/themeContext";
 import { cn } from "@/utils/helper";
@@ -29,17 +30,11 @@ export const SkelatonLoader: FC<SkelatonLoaderProps> = memo(
       : 10;
 
     return (
-      <SkeletonTheme
-        baseColor={isThemeLight ? "#f5f5f5" : "#333"}
-        highlightColor={isThemeLight ? "#eee" : "#444"}
-      >
+      <SkeletonTheme baseColor={isThemeLight ? "#f5f5f5" : "#333"} highlightColor={isThemeLight ? "#eee" : "#444"}>
         <div className={classNames}>
           {Array.from({ length: arrSize }).map((_item, index) => {
             return (
-              <div
-                key={index}
-                className={`${!isMoviesSliderLoader ? "mb-6" : ""}`}
-              >
+              <div key={index} className={`${!isMoviesSliderLoader ? "mb-6" : ""}`}>
                 <Skeleton height={isScreenSmall ? 216 : 250} width={170} />
                 <div className="text-center">
                   <Skeleton className="xs:mt-4 mt-3 w-[80%] " />
@@ -56,7 +51,7 @@ export const SkelatonLoader: FC<SkelatonLoaderProps> = memo(
 export const Loader = memo(() => {
   return (
     <div className="relative dark:bg-black bg-mainColor top-0 left-0 w-screen h-screen flex justify-center items-center">
-      <div className="loader" />
+      <FaSpinner className="animate-spin text-4xl" style={{color: "#73f340"}} />
     </div>
   );
 });
