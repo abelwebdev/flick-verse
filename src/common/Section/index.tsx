@@ -44,7 +44,10 @@ const Section: FC<SectionProps> = ({
           <div className="line" />
         </div>
         {!showSimilarShows && (
-          <Link to={`/${category}?type=${type}`} className={linkStyle}>
+          <Link
+            to={`/${category === "movie" ? "movies" : category}`}
+            className={linkStyle}
+          >
             View all
           </Link>
         )}

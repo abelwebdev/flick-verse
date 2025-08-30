@@ -51,7 +51,7 @@ const MovieCard = ({
   return (
     <>
       <Link
-        to={`/${category}/${id}`}
+        to={`/${category === "movies" ? "movie" : category}/${id}`}
         className="dark:bg-[#1f1f1f] bg-[#f5f5f5] rounded-lg relative group w-[200px] select-none xs:h-[300px] h-[260px] overflow-hidden z-0"
       >
         {typeof vote_average === "number" && (
