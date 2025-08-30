@@ -8,7 +8,6 @@ module.exports = {
         xs: "380px",
       },
       colors: {
-        // black: "#191624",
         black: "#15171c",
       },
 
