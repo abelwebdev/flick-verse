@@ -10,13 +10,14 @@ interface CastsProps {
     id: string;
     profile_path: string;
     name: string;
+    character?: string;
   }[];
 }
 
 const Casts: FC<CastsProps> = ({ casts }) => {
   const isNotMobile = useMediaQuery("(min-width: 768px");
   const { fadeDown, staggerContainer } = useMotion();
-  const topCasts = casts.slice(0, 4);
+  const topCasts = casts.slice(0, 6);
 
   if (topCasts.length === 0) return null;
 
@@ -35,7 +36,7 @@ const Casts: FC<CastsProps> = ({ casts }) => {
         className="flex flex-wrap md:gap-4 sm:gap-[14px] gap-2  sm:-mt-2 xs:-mt-[6px] -mt-1"
       >
         {topCasts.map((cast) => {
-          const { id, profile_path: profilePath, name } = cast;
+          const { id, profile_path: profilePath, name, character } = cast;
           return (
             <m.figure
               variants={fadeDown}
@@ -52,9 +53,16 @@ const Casts: FC<CastsProps> = ({ casts }) => {
                 />
               </div>
 
-              <h4 className="text-gray-300 md:text-[12px] sm:text-[10.75px] text-[10px] md:max-w-[64px] text-center font-semibold sm:-mt-0 leading-snug max-w-[40px]">
-                {name}
-              </h4>
+              <div className="flex flex-col items-center text-center md:max-w-[64px] max-w-[40px]">
+                <h4 className="text-gray-300 md:text-[12px] sm:text-[10.75px] text-[10px] font-semibold leading-snug">
+                  {name}
+                </h4>
+                {character && (
+                  <p className="text-gray-400 md:text-[10px] sm:text-[9px] text-[8px] leading-tight mt-1 italic">
+                    as {character}
+                  </p>
+                )}
+              </div>
             </m.figure>
           );
         })}

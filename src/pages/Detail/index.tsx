@@ -10,7 +10,7 @@ import { useMotion } from "@/hooks/useMotion";
 import { mainHeading, maxWidth, paragraph } from "@/styles";
 import { cn } from "@/utils/helper";
 import { useTheme } from "@/context/themeContext";
-import { getMovieServerUrls, getTvServerUrls } from "@/utils/urls";
+import { getMovieServerUrls, getTvServerUrls, MovieServerUrlItem, TvServerUrlItem } from "@/utils/urls";
 
 const Detail = () => {
   const { category, id } = useParams(); // params: movie | tv
@@ -28,7 +28,7 @@ const Detail = () => {
     isFetching: isMovieFetching,
     isError: isMovieError,
   } = useGetMovieQuery(
-    { id: String(id) },
+    { category: "movie", id: Number(id) },
     { skip: category !== "movie" }
   );
 
@@ -38,7 +38,7 @@ const Detail = () => {
     isFetching: isTvFetching,
     isError: isTvError,
   } = useGetTvQuery(
-    { id: String(id) },
+    { category: "tv", id: Number(id) },
     { skip: category !== "tv" }
   );
 
@@ -54,7 +54,7 @@ const Detail = () => {
   const { theme } = useTheme();
   const isDark = theme === "Dark";
 
-  const servers: ServerUrlItem[] =
+  const servers: (MovieServerUrlItem | TvServerUrlItem)[] =
     category === "movie"
       ? getMovieServerUrls(String(id))
       : getTvServerUrls(String(id), selectedSeason, selectedEpisode);
@@ -92,7 +92,6 @@ const Detail = () => {
   if (isTvError || isMovieError) {
     return <Error error="Something went wrong!" />;
   }
-
   
   // Destructure safely from media
   const {
@@ -107,6 +106,9 @@ const Detail = () => {
     release_date,
     first_air_date,
     episode_run_time,
+    production_countries = [],
+    origin_country = [],
+
   } = media || {};
 
   const displayYear = (release_date || first_air_date || "").slice(0, 4);
@@ -120,6 +122,22 @@ const Detail = () => {
 
   const displayRating =
     typeof vote_average === "number" ? vote_average.toFixed(1) : undefined;
+
+  // Get country information (prioritize production_countries for movies, origin_country for TV)
+  const getCountryDisplay = () => {
+    if (category === "movie" && production_countries?.length > 0) {
+      return production_countries.map((country: any) => country.name || country.iso_3166_1).join(", ");
+    }
+    if (category === "tv" && origin_country?.length > 0) {
+      return origin_country.join(", ");
+    }
+    if (production_countries?.length > 0) {
+      return production_countries.map((country: any) => country.name || country.iso_3166_1).join(", ");
+    }
+    return null;
+  };
+
+  const displayCountry = getCountryDisplay();
 
   const lightBackgroundStyle = {
     backgroundImage: `linear-gradient(to top, rgba(255,255,255,0.96), rgba(255,255,255,0.92), rgba(255,255,255,0.85), rgba(255,255,255,0.6)), url('https://image.tmdb.org/t/p/original/${posterPath}'`,
@@ -299,7 +317,7 @@ const Detail = () => {
           </m.p>
 
           {/* Extra info */}
-          {(runtimeMinutes || displayRating || displayYear) && (
+          {(runtimeMinutes || displayRating || displayYear || displayCountry) && (
             <div
               className={`text-sm ${
                 isDark ? "text-gray-200" : "text-gray-700"
@@ -321,6 +339,11 @@ const Detail = () => {
               {displayYear && (
                 <span>
                   <span className="font-semibold">Year:</span> {displayYear}
+                </span>
+              )}
+              {displayCountry && (
+                <span>
+                  <span className="font-semibold">Country:</span> {displayCountry}
                 </span>
               )}
               {category === "tv" && numberOfSeasons && (

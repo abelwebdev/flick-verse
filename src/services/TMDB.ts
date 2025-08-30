@@ -48,10 +48,10 @@ export const tmdbApi = createApi({
     //   },
     // }),
     getMovie: builder.query({
-      query: ({ category, id }: { category: string; id: number }) => `/3/movie/${id}?language=en-US`,
+      query: ({ category, id }: { category: string; id: number }) => `/3/movie/${id}?language=en-US&append_to_response=credits`,
     }),
     getTv: builder.query({
-      query: ({ category, id }: {category: string; id: number }) => `/3/tv/${id}?language=en-US`,
+      query: ({ category, id }: {category: string; id: number }) => `/3/tv/${id}?language=en-US&append_to_response=credits`,
     }),
     getSeasonEpisodes: builder.query({
       query: ({ id, season_number }: { id: string; season_number: number }) =>
