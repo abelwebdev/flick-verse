@@ -30,8 +30,9 @@ const SideBar: React.FC = () => {
   });
 
   return (
-    <AnimatePresence>
+    <>
       {showSidebar && (
+        <AnimatePresence>
         <Overlay>
           <m.nav
             variants={slideIn("right", "tween", 0, 0.3)}
@@ -75,8 +76,9 @@ const SideBar: React.FC = () => {
             </div>
           </m.nav>
         </Overlay>
-      )}{" "}
-    </AnimatePresence>
+        </AnimatePresence>
+      )}
+    </>
   );
 };
 
