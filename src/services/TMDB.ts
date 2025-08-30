@@ -68,7 +68,17 @@ export const tmdbApi = createApi({
       query: ({ category, page }: { category: string; page: number }) =>
         `/3/${category}/popular?language=en-US&page=${page}`,
     }),
+    // services/TMDB.ts
+    getMovieSearch: builder.query({
+      query: ({ query, page = 1 }: { query: string; page?: number }) => 
+        `/3/search/movie?query=${encodeURIComponent(query)}&language=en-US&page=${page}`,
+    }),
+    getTvSearch: builder.query({
+      query: ({ query, page = 1 }: { query: string; page?: number }) => 
+        `/3/search/tv?query=${encodeURIComponent(query)}&language=en-US&page=${page}`,
+    }),
+
   }),
 });
 
-export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetContentQuery } = tmdbApi;
+export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery } = tmdbApi;

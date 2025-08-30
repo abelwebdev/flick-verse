@@ -3,7 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { FiLoader } from "react-icons/fi";
 import { MovieCard, SkelatonLoader } from "@/common";
 import { CatalogHeader, Search } from "./components";
-import { useGetContentQuery } from "@/services/TMDB";
+import { useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery } from "@/services/TMDB";
 import { smallMaxWidth } from "@/styles";
 import { IMovie } from "@/types";
 import { cn } from "@/utils/helper";
@@ -15,18 +15,49 @@ const Catalog = () => {
   const [query, setQuery] = useSearchParams();
   const { category } = useParams();
 
-  const type = query.get("type") || "popular";
   const searchQuery = query.get("search") || "";
 
 
-  const { data, isLoading, isFetching } = useGetContentQuery({
+  // Use search query if it exists
+  const shouldUseSearch = Boolean(searchQuery);
+  const isMovieCategory = category !== "tv";
+  
+  const { data: contentData, isLoading: isContentLoading, isFetching: isContentFetching } = useGetContentQuery({
     category: category === "tv" ? "tv" : "movie",
     page,
+  }, {
+    skip: shouldUseSearch, // Skip this query if we're searching
   });
 
+  const { data: movieSearchData, isLoading: isMovieSearchLoading, isFetching: isMovieSearchFetching } = useGetMovieSearchQuery({
+    query: searchQuery,
+    page,
+  }, {
+    skip: !shouldUseSearch || !isMovieCategory, // Skip if not searching or not movies
+  });
+
+  const { data: tvSearchData, isLoading: isTvSearchLoading, isFetching: isTvSearchFetching } = useGetTvSearchQuery({
+    query: searchQuery,
+    page,
+  }, {
+    skip: !shouldUseSearch || isMovieCategory, // Skip if not searching or not TV
+  });
+
+  // Use the appropriate data and loading states
+  const data = shouldUseSearch 
+    ? (isMovieCategory ? movieSearchData : tvSearchData)
+    : contentData;
+  const isLoading = shouldUseSearch 
+    ? (isMovieCategory ? isMovieSearchLoading : isTvSearchLoading)
+    : isContentLoading;
+  const isFetching = shouldUseSearch 
+    ? (isMovieCategory ? isMovieSearchFetching : isTvSearchFetching)
+    : isContentFetching;
+
   useEffect(() => {
-    setPage(page);
+    setPage(1); // Reset to page 1 when category or search changes
     setIsCategoryChanged(true);
+    setShows([]); // Clear current shows when switching categories or search
   }, [category, searchQuery]);
 
   useEffect(() => {
@@ -48,7 +79,7 @@ const Catalog = () => {
         <Search setQuery={setQuery}/>
         {isLoading || isCategoryChanged ? (
           <SkelatonLoader isMoviesSliderLoader={false} />
-        ) : (
+        ) : shows?.length > 0 ? (
           <div className="flex flex-wrap gap-4 sm:gap-6 lg:gap-8 justify-center">
             {shows?.map((movie, index) => (
               <div
@@ -59,12 +90,28 @@ const Catalog = () => {
               </div>
             ))}
           </div>
+          
+        ) : searchQuery ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="text-gray-500 dark:text-gray-400 text-lg mb-2">
+              No results found for "{searchQuery}"
+            </div>
+            <div className="text-gray-400 dark:text-gray-500 text-sm">
+              Try searching with different keywords or browse {category === "tv" ? "Movies" : "TV series"} instead.
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="text-gray-500 dark:text-gray-400 text-lg">
+              No {category === "tv" ? "TV series" : "movies"} available at the moment.
+            </div>
+          </div>
         )}
         {isFetching && !isCategoryChanged ? (
           <div className="my-4">
             <FiLoader className="mx-auto dark:text-gray-300 w-5 h-5 animate-spin"/>
           </div>
-        ) : (
+        ) : shows?.length > 0 ? (
           <div className="w-full flex items-center justify-center">
             <button
               type="button"
@@ -77,7 +124,7 @@ const Catalog = () => {
               Load more
             </button>
           </div>
-        )}
+        ) : null}
       </section>
     </>
   );
