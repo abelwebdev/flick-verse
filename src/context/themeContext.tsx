@@ -33,7 +33,6 @@ const ThemeProvider = ({ children }: Props) => {
   const checkTheme = useCallback(() => {
     if (initialTheme) return;
     setTheme("Dark");
-    // checkSystemTheme();
   }, []);
 
   useEffect(() => {
