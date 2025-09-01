@@ -1,7 +1,9 @@
 import { memo, FC } from "react";
 import { m } from "framer-motion";
 import { useMediaQuery } from "usehooks-ts";
-
+import { mainHeading } from "@/styles";
+import { useTheme } from "@/context/themeContext";
+import { cn } from "@/utils/helper";
 import Image from "@/common/Image";
 import { useMotion } from "@/hooks/useMotion";
 
@@ -18,14 +20,20 @@ const Casts: FC<CastsProps> = ({ casts }) => {
   const isNotMobile = useMediaQuery("(min-width: 768px");
   const { fadeDown, staggerContainer } = useMotion();
   const topCasts = casts.slice(0, 6);
-
+  const { theme } = useTheme();
+  const isDark = theme === "Dark";
   if (topCasts.length === 0) return null;
 
   return (
     <>
       <m.h3
         variants={fadeDown}
-        className="text-secColor font-bold md:text-[18px] sm:text-[16.75px] xs:text-[15.75px] text-[14.75px]"
+        className={cn(
+              mainHeading,
+              `${
+                isDark ? "text-gray-100" : "text-gray-900"
+              } md:max-w-[420px] will-change-transform motion-reduce:transform-none`
+            )}
       >
         Top Casts
       </m.h3>
@@ -49,16 +57,24 @@ const Casts: FC<CastsProps> = ({ casts }) => {
                   height={isNotMobile ? 96 : 54}
                   src={`https://image.tmdb.org/t/p/original/${profilePath}`}
                   alt={name}
-                  className=" object-cover rounded-md shadow-md"
+                  className="object-cover rounded-md shadow-md"
                 />
               </div>
 
-              <div className="flex flex-col items-center text-center md:max-w-[64px] max-w-[40px]">
-                <h4 className="text-gray-300 md:text-[12px] sm:text-[10.75px] text-[10px] font-semibold leading-snug">
+              <div className="flex flex-col items-center text-center md:max-w-[64px] max-w-[80px]">
+                <h4 className={cn(
+                    `${
+                      isDark ? "text-gray-100" : "text-gray-900"
+                    } md:max-w-[420px] will-change-transform motion-reduce:transform-none`
+                  )}>
                   {name}
                 </h4>
                 {character && (
-                  <p className="text-gray-400 md:text-[10px] sm:text-[9px] text-[8px] leading-tight mt-1 italic">
+                  <p className={cn(
+                    `${
+                      isDark ? "text-gray-100" : "text-gray-900"
+                    } md:text-[10px] sm:text-[9px] text-[8px] leading-tight mt-1 italic`
+                  )}>
                     as {character}
                   </p>
                 )}

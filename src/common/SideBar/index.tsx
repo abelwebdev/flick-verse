@@ -48,7 +48,6 @@ const SideBar: React.FC = () => {
             <div className="flex items-center justify-center  ">
               <Logo />
             </div>
-
             <div className="p-4 sm:pt-8  xs:pt-6 pt-[22px] h-full flex flex-col">
               <h3 className={sideBarHeading}>Menu</h3>
               <ul className="flex flex-col sm:gap-2 xs:gap-[6px] gap-1 capitalize xs:text-[14px] text-[13.5px] font-medium">
@@ -62,17 +61,12 @@ const SideBar: React.FC = () => {
                   );
                 })}
               </ul>
-
               <h3 className={cn(`mt-4 `, sideBarHeading)}>Theme</h3>
               <ul className="flex flex-col sm:gap-2 xs:gap-[4px] gap-[2px] capitalize text-[14.75px] font-medium">
                 {themeOptions.map((theme) => {
                   return <ThemeOption theme={theme} key={theme.title} />;
                 })}
               </ul>
-
-              <p className="xs:text-[12px] text-[11.75px] mt-auto sm:mb-6 mb-[20px] text-center font-nunito dark:text-gray-200">
-                &copy; 2023 by Flick Verse. All right reserved.
-              </p>
             </div>
           </m.nav>
         </Overlay>

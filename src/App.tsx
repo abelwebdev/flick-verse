@@ -22,7 +22,7 @@ const App = () => {
     <>
       <SideBar />
       <Header />
-      <main className=" lg:pb-14 md:pb-4 sm:pb-2 xs:pb-1 pb-0">
+      <main>
         <ScrollToTop>
           <Suspense fallback={<Loader />}>
             <Routes>

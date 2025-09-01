@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { Poster, Loader, Error } from "@/common";
 import { Casts, Genre } from "./components";
 
-import { useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery } from "@/services/TMDB";
+import { useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetVideosQuery } from "@/services/TMDB";
 import { useMotion } from "@/hooks/useMotion";
 import { mainHeading, maxWidth, paragraph } from "@/styles";
 import { cn } from "@/utils/helper";
@@ -47,6 +47,14 @@ const Detail = () => {
     { skip: category !== "tv" }
   );
 
+  const { data: videos } = useGetVideosQuery(
+    { category: category as string, id: Number(id) },
+    { skip: !category }
+  );
+
+  const trailer = videos?.results?.find(
+    (v: any) => v.type === "Trailer" && v.site === "YouTube"
+  );
 
   // Pick correct data source
   const media = category === "movie" ? movie : tv;
@@ -66,7 +74,6 @@ const Detail = () => {
   // Extract number of seasons/episodes if TV
   const numberOfSeasons = category === "tv" && (tv?.number_of_seasons || 0);
   const numberOfEpisodes = category === "tv" && (tv?.number_of_episodes || 0);
-
 
   useEffect(() => {
     if (media?.title || media?.name) {
@@ -92,7 +99,6 @@ const Detail = () => {
   if (isTvError || isMovieError) {
     return <Error error="Something went wrong!" />;
   }
-  
   // Destructure safely from media
   const {
     title,
@@ -120,8 +126,7 @@ const Detail = () => {
       ? episode_run_time[0]
       : undefined;
 
-  const displayRating =
-    typeof vote_average === "number" ? vote_average.toFixed(1) : undefined;
+  const displayRating = typeof vote_average === "number" ? vote_average.toFixed(1) : undefined;
 
   // Get country information (prioritize production_countries for movies, origin_country for TV)
   const getCountryDisplay = () => {
@@ -147,7 +152,7 @@ const Detail = () => {
   
 
   return (
-    <section className="w-full relative z-0 pt-[50px] md:pt-[60px] dark:bg-black bg-mainColor" style={isDark ? undefined : lightBackgroundStyle}>
+    <section className="w-full relative z-0 pt-[50px] md:pt-[60px] dark:bg-black bg-mainColor lg:pb-14 md:pb-4 sm:pb-2 xs:pb-1 pb-0" style={isDark ? undefined : lightBackgroundStyle}>
       {/* Player */}
       <div className="relative md:order-1 order-2 w-full z-0 h-[calc(100vh-60px)] md:h-[calc(100vh-60px)]">
         <iframe
@@ -257,19 +262,16 @@ const Detail = () => {
         </div>
       )}
       {/* Details */}
-      <div
-        className={`${maxWidth} pt-2 md:pt-5 mt-5 lg:pt-4 sm:pb-28 xs:pb-10 pb-8 flex md:flex-row flex-col lg:gap-12 md:gap-10 gap-6 items-center md:items-start justify-center md:order-2 order-1 relative z-10`}
-      >
+      <div className={`${maxWidth} pt-2 md:pt-5 mt-5 lg:pt-4 sm:pb-5 xs:pb-5 pb-2 flex md:flex-row flex-col lg:gap-12 md:gap-10 gap-6 items-center md:items-start justify-center md:order-2 order-1 relative z-10`}>
         <Poster title={title} posterPath={posterPath} />
-
-        <m.div
-          variants={staggerContainer(0.2, 0.4)}
+        <m.div variants={staggerContainer(0.2, 0.4)}
           initial="hidden"
           animate="show"
           className={`relative z-10 ${
             isDark ? "text-gray-300" : "text-gray-800"
-          } sm:max-w-[80vw] max-w-[90vw] md:max-w-[520px] font-nunito flex flex-col lg:gap-5 sm:gap-4 xs:gap-[14px] gap-3 mb-8 flex-1 will-change-transform motion-reduce:transform-none`}
+          } sm:max-w-[80vw] max-w-[90vw] md:max-w-[720px] font-nunito flex flex-col lg:gap-5 sm:gap-4 xs:gap-[14px] gap-3 mb-8 flex-1 will-change-transform motion-reduce:transform-none`}
         >
+          {/* Title and Genre  */}
           <m.h2
             variants={fadeDown}
             className={cn(
@@ -281,7 +283,6 @@ const Detail = () => {
           >
             {title || name}
           </m.h2>
-
           <m.ul
             variants={fadeDown}
             className="flex flex-row items-center sm:gap-[14px] xs:gap-3 gap-[6px] flex-wrap"
@@ -290,7 +291,6 @@ const Detail = () => {
               <Genre key={genre.id} name={genre.name} />
             ))}
           </m.ul>
-
           {/* Overview with toggle */}
           <m.p
             variants={fadeDown}
@@ -315,54 +315,73 @@ const Detail = () => {
               </button>
             )}
           </m.p>
-
           {/* Extra info */}
           {(runtimeMinutes || displayRating || displayYear || displayCountry) && (
-            <div
+            <m.div
               className={`text-sm ${
                 isDark ? "text-gray-200" : "text-gray-700"
               } flex flex-wrap items-center gap-x-4 gap-y-1`}
             >
               {runtimeMinutes && (
-                <span>
+                <m.span>
                   <span className="font-semibold">Runtime:</span>{" "}
                   {runtimeMinutes} min
-                </span>
+                </m.span>
               )}
               {displayRating && (
-                <span className="inline-flex items-center gap-1">
-                  <span className="font-semibold">Rating:</span>
-                  <span className="text-yellow-400">★</span>
+                <m.span className="inline-flex items-center gap-1">
+                  <m.span className="font-semibold">Rating:</m.span>
+                  <m.span className="text-yellow-400">★</m.span>
                   {displayRating}
-                </span>
+                </m.span>
               )}
               {displayYear && (
-                <span>
-                  <span className="font-semibold">Year:</span> {displayYear}
-                </span>
+                <m.span>
+                  <m.span className="font-semibold">Year:</m.span> {displayYear}
+                </m.span>
               )}
               {displayCountry && (
-                <span>
-                  <span className="font-semibold">Country:</span> {displayCountry}
-                </span>
+                <m.span>
+                  <m.span className="font-semibold">Country:</m.span> {displayCountry}
+                </m.span>
               )}
               {category === "tv" && numberOfSeasons && (
-                <span>
-                  <span className="font-semibold">Seasons:</span> {numberOfSeasons}
-                </span>
+                <m.span>
+                  <m.span className="font-semibold">Seasons:</m.span> {numberOfSeasons}
+                </m.span>
               )}
               {category === "tv" && numberOfEpisodes && (
-                <span>
+                <m.span>
                   <span className="font-semibold">Episodes:</span> {numberOfEpisodes}
-                </span>
+                </m.span>
               )}
-            </div>
+            </m.div>
           )}
           {/* Casts */}
           <Casts casts={credits?.cast || []} />
         </m.div>
-        
       </div>
+      {/* Trailer */}
+      {trailer && (
+        <div className="w-full flex flex-col items-center">
+          <h3
+            className={`text-xl font-bold mb-3 text-center ${
+              isDark ? "text-gray-100" : "text-gray-900"
+            }`}
+          >
+            Official Trailer
+          </h3>
+          <div className="aspect-video w-full max-w-4xl px-2">
+            <iframe
+              className="w-full h-full rounded-lg"
+              src={`https://www.youtube.com/embed/${trailer.key}`}
+              title={trailer.name}
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
