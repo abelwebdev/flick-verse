@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { FiLoader } from "react-icons/fi";
+import { FaSpinner } from "react-icons/fa";
 import { MovieCard, SkelatonLoader } from "@/common";
 import { CatalogHeader, Search } from "./components";
 import { useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery } from "@/services/TMDB";
@@ -109,7 +109,7 @@ const Catalog = () => {
         )}
         {isFetching && !isCategoryChanged ? (
           <div className="my-4">
-            <FiLoader className="mx-auto dark:text-gray-300 w-5 h-5 animate-spin"/>
+            <FaSpinner className="mx-auto dark:text-gray-300 w-5 h-5 animate-spin" style={{color: "#73f340"}} />
           </div>
         ) : shows?.length > 0 ? (
           <div className="w-full flex items-center justify-center">

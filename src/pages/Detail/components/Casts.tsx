@@ -17,7 +17,7 @@ interface CastsProps {
 }
 
 const Casts: FC<CastsProps> = ({ casts }) => {
-  const isNotMobile = useMediaQuery("(min-width: 768px");
+  const isNotMobile = useMediaQuery("(min-width: 768px)");
   const { fadeDown, staggerContainer } = useMotion();
   const topCasts = casts.slice(0, 6);
   const { theme } = useTheme();
@@ -32,7 +32,7 @@ const Casts: FC<CastsProps> = ({ casts }) => {
               mainHeading,
               `${
                 isDark ? "text-gray-100" : "text-gray-900"
-              } md:max-w-[420px] will-change-transform motion-reduce:transform-none`
+              } md:max-w-[420px] mb-3 will-change-transform motion-reduce:transform-none`
             )}
       >
         Top Casts
@@ -41,7 +41,7 @@ const Casts: FC<CastsProps> = ({ casts }) => {
         variants={staggerContainer(0.2, 1)}
         initial="hidden"
         animate="show"
-        className="flex flex-wrap md:gap-4 sm:gap-[14px] gap-2  sm:-mt-2 xs:-mt-[6px] -mt-1"
+        className="flex flex-wrap md:gap-5 sm:gap-4 gap-3 sm:-mt-2 xs:-mt-[6px] -mt-1"
       >
         {topCasts.map((cast) => {
           const { id, profile_path: profilePath, name, character } = cast;
@@ -49,7 +49,7 @@ const Casts: FC<CastsProps> = ({ casts }) => {
             <m.figure
               variants={fadeDown}
               key={id}
-              className="flex flex-col justify-start gap-2"
+              className="flex flex-col items-center gap-2"
             >
               <div className="md:h-[96px] md:w-[64px] h-[54px] w-[40px]">
                 <Image
@@ -61,11 +61,12 @@ const Casts: FC<CastsProps> = ({ casts }) => {
                 />
               </div>
 
-              <div className="flex flex-col items-center text-center md:max-w-[64px] max-w-[80px]">
+              <div className="flex flex-col items-center text-center md:w-[64px] w-[40px]">
                 <h4 className={cn(
                     `${
                       isDark ? "text-gray-100" : "text-gray-900"
-                    } md:max-w-[420px] will-change-transform motion-reduce:transform-none`
+                    } md:max-w-[420px] will-change-transform motion-reduce:transform-none`,
+                    "text-[10px] md:text-xs leading-tight break-words whitespace-normal overflow-hidden"
                   )}>
                   {name}
                 </h4>
@@ -73,7 +74,8 @@ const Casts: FC<CastsProps> = ({ casts }) => {
                   <p className={cn(
                     `${
                       isDark ? "text-gray-100" : "text-gray-900"
-                    } md:text-[10px] sm:text-[9px] text-[8px] leading-tight mt-1 italic`
+                    } md:text-[10px] sm:text-[9px] text-[8px] leading-tight mt-1 italic`,
+                    "break-words whitespace-normal overflow-hidden"
                   )}>
                     as {character}
                   </p>

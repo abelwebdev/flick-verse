@@ -269,7 +269,7 @@ const Detail = () => {
           animate="show"
           className={`relative z-10 ${
             isDark ? "text-gray-300" : "text-gray-800"
-          } sm:max-w-[80vw] max-w-[90vw] md:max-w-[720px] font-nunito flex flex-col lg:gap-5 sm:gap-4 xs:gap-[14px] gap-3 mb-8 flex-1 will-change-transform motion-reduce:transform-none`}
+          } sm:max-w-[80vw] max-w-[90vw] md:max-w-[820px] font-nunito flex flex-col lg:gap-5 sm:gap-4 xs:gap-[14px] gap-3 mb-8 flex-1 will-change-transform motion-reduce:transform-none`}
         >
           {/* Title and Genre  */}
           <m.h2
@@ -357,13 +357,19 @@ const Detail = () => {
               )}
             </m.div>
           )}
-          {/* Casts */}
-          <Casts casts={credits?.cast || []} />
-        </m.div>
+           {/* Casts */}
+           <div className="hidden lg:block">
+             <Casts casts={credits?.cast || []} />
+           </div>
+         </m.div>
+      </div>
+      {/* Casts */}
+      <div className={`${maxWidth} lg:hidden block`}>
+        <Casts casts={credits?.cast || []} />
       </div>
       {/* Trailer */}
       {trailer && (
-        <div className="w-full flex flex-col items-center">
+        <div className="w-full flex flex-col items-center mt-3">
           <h3
             className={`text-xl font-bold mb-3 text-center ${
               isDark ? "text-gray-100" : "text-gray-900"
@@ -371,7 +377,7 @@ const Detail = () => {
           >
             Official Trailer
           </h3>
-          <div className="aspect-video w-full max-w-4xl px-2">
+          <div className="aspect-video w-full max-w-[80vw] lg:max-w-[1100px] px-2">
             <iframe
               className="w-full h-full rounded-lg"
               src={`https://www.youtube.com/embed/${trailer.key}`}

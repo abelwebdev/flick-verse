@@ -1,12 +1,10 @@
 import { useReducedMotion } from "framer-motion";
 import { useCallback, useMemo } from "react";
-import { useMediaQuery } from "usehooks-ts";
 
 export const useMotion = () => {
-  const isMiniScreen = useMediaQuery("(max-width: 768px)");
   const shouldReduceMotion = useReducedMotion();
 
-  const isMotionDisabled = shouldReduceMotion || isMiniScreen;
+  const isMotionDisabled = shouldReduceMotion;
 
   const zoomIn = useCallback(
     (scale: number, duration: number) =>
