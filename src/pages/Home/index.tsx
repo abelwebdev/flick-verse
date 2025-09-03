@@ -16,7 +16,7 @@ const Home = () => {
     category: "tv",
     type: "popular",
     page: 1,
-  })
+  });
 
   if (isMovieLoading) {
     return <Loader />;

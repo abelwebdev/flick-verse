@@ -80,11 +80,11 @@ const Catalog = () => {
         {isLoading || isCategoryChanged ? (
           <SkelatonLoader isMoviesSliderLoader={false} />
         ) : shows?.length > 0 ? (
-          <div className="flex flex-wrap gap-4 sm:gap-6 lg:gap-8 justify-center">
+          <div className="flex flex-wrap gap-4 sm:gap-6 md:gap-8 lg:gap-10 justify-center">
             {shows?.map((movie, index) => (
               <div
                 key={index}
-                className="flex flex-col gap-4 md:mr-5 xs:max-w-[170px] max-w-[250px] rounded-lg"
+                className="flex flex-col shrink-0 gap-4 xs:gap-2 md:gap-2 w-[200px] rounded-lg"
               >
                 <MovieCard movie={movie} category={String(category)} />
               </div>

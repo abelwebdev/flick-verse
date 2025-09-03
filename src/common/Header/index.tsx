@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { BsMoonStarsFill } from "react-icons/bs";
 import { AiOutlineMenu } from "react-icons/ai";
 import { FiSun } from "react-icons/fi";
 import throttle from "lodash.throttle";
+import { GoSearch } from "react-icons/go";
 
 import { ThemeMenu, Logo } from "..";
 import HeaderNavItem from "./HeaderNavItem";
@@ -23,6 +24,8 @@ const Header = () => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isNotFoundPage, setIsNotFoundPage] = useState<boolean>(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     const handleBackgroundChange = () => {
@@ -58,7 +61,18 @@ const Header = () => {
     }
   }, [location.pathname]);
 
-  const isDetailPage = location.pathname.split("/").length === 3;
+  const isDetailPage = location.pathname.split("/").length === 3 && !location.pathname.startsWith("/search");
+
+
+  const onSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = search.trim();
+    if (!trimmed) {
+      navigate("/search/");
+      return;
+    }
+    navigate(`/search/${encodeURIComponent(trimmed)}`);
+  };
 
   return (
     <header
@@ -82,7 +96,7 @@ const Header = () => {
           )}
         />
 
-        <div className=" hidden md:flex flex-row gap-8 items-center text-gray-600 dark:text-gray-300">
+        <div className="hidden md:flex flex-row gap-8 items-center text-gray-600 dark:text-gray-300">
           <ul className="flex flex-row gap-8 capitalize text-[14.75px] font-medium">
             {navLinks.map((link: { title: string; path: string }) => {
               return (
@@ -95,6 +109,27 @@ const Header = () => {
               );
             })}
           </ul>
+
+          <form onSubmit={onSearchSubmit} className="flex items-center">
+            <div className="relative">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={`Search Movies and TV`}
+                className={cn(
+                  "py-[6px] pl-5 pr-10 rounded-full outline-none w-[100px] md:w-[250px] text-[14px] font-medium transition-all duration-200 border border-gray-300 dark:border-transparent",
+                  isActive || isDetailPage
+                    ? "bg-white/90 text-gray-800 dark:bg-gray-800 dark:text-gray-100"
+                    : "bg-white/80 text-gray-800 dark:bg-[#302d3a] dark:text-primary"
+                )}
+                aria-label="Search"
+              />
+              <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-[18px] text-[#73f340]">
+                <GoSearch style={{ color: "#73f340" }} />
+              </button>
+            </div>
+          </form>
 
           <div className="button relative">
             <button

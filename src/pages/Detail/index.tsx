@@ -369,7 +369,7 @@ const Detail = () => {
       </div>
       {/* Trailer */}
       {trailer && (
-        <div className="w-full flex flex-col items-center mt-3">
+        <div className="w-full flex flex-col items-center mt-3 mb-3">
           <h3
             className={`text-xl font-bold mb-3 text-center ${
               isDark ? "text-gray-100" : "text-gray-900"
@@ -377,7 +377,7 @@ const Detail = () => {
           >
             Official Trailer
           </h3>
-          <div className="aspect-video w-full max-w-[80vw] lg:max-w-[1100px] px-2">
+          <div className="aspect-video w-full max-w-[90vw] lg:max-w-[1150px] px-2">
             <iframe
               className="w-full h-full rounded-lg"
               src={`https://www.youtube.com/embed/${trailer.key}`}

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import favicon from "../../assets/svg/favicon.svg"
 
 import Image from "../Image";
@@ -12,6 +12,8 @@ const MovieCard = ({
   movie: IMovie;
   category: string;
 }) => {
+  const location = useLocation();
+  const isSearchPage = location.pathname.startsWith("/search");
   const { poster_path, original_title, original_name, title, name, id, vote_average, release_date, first_air_date, genre_ids } = movie;
   const primaryTitle = category === "movie"
     ? (title || original_title || name || original_name || "")
@@ -57,6 +59,11 @@ const MovieCard = ({
         {typeof vote_average === "number" && (
           <div className="absolute top-2 left-2 z-[1] px-2 py-[2px] rounded-md text-[12px] font-semibold bg-black/70 text-white">
             ⭐ {vote_average.toFixed(1)}
+          </div>
+        )}
+        {isSearchPage && (
+          <div className="absolute top-2 right-2 z-[1] px-2 py-[2px] rounded-md text-[11px] font-semibold bg-black/60 text-white uppercase tracking-wide">
+            {(category === "movies" || category === "movie") ? "Movie" : (category === "tv" ? "TV" : category)}
           </div>
         )}
         <Image

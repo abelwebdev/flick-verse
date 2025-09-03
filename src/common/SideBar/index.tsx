@@ -1,4 +1,5 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence, m } from "framer-motion";
 
 import SidebarNavItem from "./SidebarNavItem";
@@ -19,10 +20,23 @@ const SideBar: React.FC = () => {
   const { showSidebar, setShowSidebar } = useGlobalContext();
   const { theme } = useTheme();
   const { slideIn } = useMotion();
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const closeSideBar = useCallback(() => {
     setShowSidebar(false);
   }, [setShowSidebar]);
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = search.trim();
+    if (!q) {
+      closeSideBar();
+      return;
+    }
+    navigate(`/search/${encodeURIComponent(q)}`);
+    closeSideBar();
+  };
 
   const { ref } = useOnClickOutside({
     action: closeSideBar,
@@ -50,6 +64,15 @@ const SideBar: React.FC = () => {
             </div>
             <div className="p-4 sm:pt-8  xs:pt-6 pt-[22px] h-full flex flex-col">
               <h3 className={sideBarHeading}>Menu</h3>
+              <form onSubmit={onSubmit} className="mt-4 mb-2">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search Movies and TV"
+                  className="w-full py-2 px-3 rounded-md outline-none text-sm border border-gray-300 dark:border-gray-600 bg-white/90 dark:bg-gray-800 dark:text-gray-100"
+                />
+              </form>
               <ul className="flex flex-col sm:gap-2 xs:gap-[6px] gap-1 capitalize xs:text-[14px] text-[13.5px] font-medium">
                 {navLinks.map((link: INavLink) => {
                   return (
