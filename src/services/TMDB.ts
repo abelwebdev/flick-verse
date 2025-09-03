@@ -41,7 +41,10 @@ export const tmdbApi = createApi({
     getVideos: builder.query<any, { category: string; id: number }>({
       query: ({ category, id }) => `/${category}/${id}/videos`,
     }),
+    getMovieImages: builder.query<any, { id: number }>({
+      query: ({ id }) => `/movie/${id}/images?include_image_language=en`,
+    }),
   }),
 });
 
-export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery, useGetVideosQuery } = tmdbApi;
+export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery, useGetVideosQuery, useGetMovieImagesQuery } = tmdbApi;
