@@ -1,15 +1,18 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import HeroSlide from "./HeroSlide";
 import { useGlobalContext } from "@/context/globalContext";
 import { IMovie } from "@/types";
+import { useLazyGetMovieImagesQuery } from "@/services/TMDB";
 
 const Hero = ({ movies }: { movies: IMovie[] }) => {
   const { isModalOpen } = useGlobalContext();
 
   const swiperRef = useRef<any>(null);
+  const [logoPathByMovieId, setLogoPathByMovieId] = useState<Record<string, string | null>>({});
+  const [fetchImages] = useLazyGetMovieImagesQuery();
 
   useEffect(() => {
     const swiper = swiperRef.current?.swiper;
@@ -21,6 +24,37 @@ const Hero = ({ movies }: { movies: IMovie[] }) => {
       swiper.autoplay?.start();
     }
   }, [isModalOpen]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    const loadLogos = async () => {
+      try {
+        const entries = await Promise.all(
+          movies.map(async (movie) => {
+            try {
+              const data = await fetchImages({ id: Number(movie.id) }).unwrap();
+              const firstLogoPath: string | null = data?.logos?.[0]?.file_path ?? null;
+              return [String(movie.id), firstLogoPath] as const;
+            } catch {
+              return [String(movie.id), null] as const;
+            }
+          })
+        );
+        if (isCancelled) return;
+        const map: Record<string, string | null> = {};
+        for (const [id, path] of entries) map[id] = path;
+        setLogoPathByMovieId(map);
+      } catch {
+        // noop
+      }
+    };
+    if (movies && movies.length > 0) {
+      loadLogos();
+    }
+    return () => {
+      isCancelled = true;
+    };
+  }, [movies, fetchImages]);
 
   return (
     <Swiper
@@ -46,7 +80,11 @@ const Hero = ({ movies }: { movies: IMovie[] }) => {
             }}
             className=" h-full w-full will-change-transform motion-reduce:transform-none"
           >
-            {({ isActive }) => (isActive ? <HeroSlide movie={movie} /> : null)}
+            {({ isActive }) => (
+              isActive ? (
+                <HeroSlide movie={movie} logoPath={logoPathByMovieId[String(movie.id)] ?? null} />
+              ) : null
+            )}
           </SwiperSlide>
         );
       })}

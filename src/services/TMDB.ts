@@ -47,4 +47,4 @@ export const tmdbApi = createApi({
   }),
 });
 
-export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery, useGetVideosQuery, useGetMovieImagesQuery } = tmdbApi;
+export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery, useGetVideosQuery, useGetMovieImagesQuery, useLazyGetMovieImagesQuery } = tmdbApi;

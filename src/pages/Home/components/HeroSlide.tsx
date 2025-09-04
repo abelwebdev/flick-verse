@@ -6,9 +6,8 @@ import { mainHeading, maxWidth, paragraph, watchBtn } from "@/styles";
 import { IMovie } from "@/types";
 import { cn } from "@/utils/helper";
 import { useMotion } from "@/hooks/useMotion";
-import { useGetMovieImagesQuery } from "@/services/TMDB";
 
-const HeroSlide = ({ movie }: { movie: IMovie }) => {
+const HeroSlide = ({ movie, logoPath }: { movie: IMovie, logoPath: string | null }) => {
   const navigate = useNavigate();
   const { fadeDown, staggerContainer } = useMotion();
 
@@ -20,8 +19,6 @@ const HeroSlide = ({ movie }: { movie: IMovie }) => {
     genre_ids,
   } = movie;
 
-  const { data: images } = useGetMovieImagesQuery({ id: Number(id) });
-  
   const handleWatchNow = () => {
     navigate(`/movie/${id}`);
   };
@@ -39,10 +36,10 @@ const HeroSlide = ({ movie }: { movie: IMovie }) => {
         animate="show"
         className="text-gray-300 sm:max-w-[80vw] max-w-[90vw]  md:max-w-[420px] font-nunito flex flex-col sm:gap-5 xs:gap-3 gap-[10px] sm:mb-8"
       >
-        {images?.logos && images.logos.length > 0 ? (
+        {logoPath ? (
           <m.div variants={fadeDown} className="mb-2 mt-5">
             <img
-              src={`https://image.tmdb.org/t/p/original${images.logos[0].file_path}`}
+              src={`https://image.tmdb.org/t/p/original${logoPath}`}
               alt={title}
               className="max-w-full h-auto max-h-16 object-contain"
             />
