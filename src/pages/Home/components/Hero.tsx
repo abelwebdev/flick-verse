@@ -56,6 +56,17 @@ const Hero = ({ movies }: { movies: IMovie[] }) => {
     };
   }, [movies, fetchImages]);
 
+  useEffect(() => {
+    // Preload all discovered logo images to warm the cache
+    const baseUrl = "https://image.tmdb.org/t/p/original";
+    Object.values(logoPathByMovieId).forEach((relativePath) => {
+      if (!relativePath) return;
+      const img = new Image();
+      img.decoding = "async";
+      img.src = `${baseUrl}${relativePath}`;
+    });
+  }, [logoPathByMovieId]);
+
   return (
     <Swiper
       ref={swiperRef}

@@ -7,7 +7,7 @@ import { IMovie } from "@/types";
 import { cn } from "@/utils/helper";
 import { useMotion } from "@/hooks/useMotion";
 
-const HeroSlide = ({ movie, logoPath }: { movie: IMovie, logoPath: string | null }) => {
+const HeroSlide = ({ movie, logoPath }: { movie: IMovie, logoPath: string | null | undefined }) => {
   const navigate = useNavigate();
   const { fadeDown, staggerContainer } = useMotion();
 
@@ -44,11 +44,11 @@ const HeroSlide = ({ movie, logoPath }: { movie: IMovie, logoPath: string | null
               className="max-w-full h-auto max-h-16 object-contain"
             />
           </m.div>
-        ) : (
+        ) : logoPath === null ? (
           <m.h2 variants={fadeDown} className={cn(mainHeading)}>
             {title}
           </m.h2>
-        )}
+        ) : null}
         <m.div variants={fadeDown} className="flex items-center gap-3">
           {vote_average && (
             <div className="flex items-center gap-1 px-3 py-1 bg-gray-800/50 border border-gray-600/50 rounded-full">
