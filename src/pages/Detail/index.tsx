@@ -250,7 +250,7 @@ const Detail = () => {
                     : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200"
                 )}
               >
-                <span className="block whitespace-nowrap overflow-hidden hover:animate-scroll-text">
+                <span className="inline-block whitespace-nowrap hover:animate-scroll-text" title={(ep.name && !ep.name.toLowerCase().startsWith("episode") ? ep.episode_number + ". " + ep.name : `Episode ${ep.episode_number}`)}>
                   {ep.name && !ep.name.toLowerCase().startsWith("episode")
                     ? ep.episode_number + ". " + ep.name
                     : `Episode ${ep.episode_number}`}

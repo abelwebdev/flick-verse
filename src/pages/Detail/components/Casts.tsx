@@ -32,7 +32,7 @@ const Casts: FC<CastsProps> = ({ casts }) => {
               mainHeading,
               `${
                 isDark ? "text-gray-100" : "text-gray-900"
-              } md:max-w-[420px] mb-3 will-change-transform motion-reduce:transform-none`
+              } md:max-w-[420px] mb-5 will-change-transform motion-reduce:transform-none`
             )}
       >
         Top Casts
