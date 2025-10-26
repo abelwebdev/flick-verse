@@ -28,7 +28,7 @@ const Detail = () => {
     isFetching: isMovieFetching,
     isError: isMovieError,
   } = useGetMovieQuery(
-    { category: "movie", id: Number(id) },
+    { id: Number(id) },
     { skip: category !== "movie" }
   );
 
@@ -38,7 +38,7 @@ const Detail = () => {
     isFetching: isTvFetching,
     isError: isTvError,
   } = useGetTvQuery(
-    { category: "tv", id: Number(id) },
+    { id: Number(id) },
     { skip: category !== "tv" }
   );
 
