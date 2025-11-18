@@ -128,7 +128,6 @@ const Detail = () => {
 
   const displayRating = typeof vote_average === "number" ? vote_average.toFixed(1) : undefined;
 
-  // Get country information (prioritize production_countries for movies, origin_country for TV)
   const getCountryDisplay = () => {
     if (category === "movie" && production_countries?.length > 0) {
       return production_countries.map((country: any) => country.name || country.iso_3166_1).join(", ");
@@ -149,10 +148,16 @@ const Detail = () => {
     backgroundPosition: "top",
     backgroundSize: "cover",
   } as const;
-  
+
+  const formatDate = (str: string) =>
+  new Date(str).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
-    <section className="w-full relative z-0 pt-[50px] md:pt-[60px] dark:bg-black bg-mainColor lg:pb-14 md:pb-4 sm:pb-2 xs:pb-1 pb-0" style={isDark ? undefined : lightBackgroundStyle}>
+    <section className="w-full relative z-0 pt-[50px] md:pt-[60px] dark:bg-[#0D0D0D] bg-mainColor lg:pb-14 md:pb-4 sm:pb-2 xs:pb-1 pb-0" style={isDark ? undefined : lightBackgroundStyle}>
       {/* Player */}
       <div className="relative md:order-1 order-2 w-full z-0 h-[calc(100vh-60px)] md:h-[calc(100vh-60px)]">
         <iframe
@@ -201,63 +206,156 @@ const Detail = () => {
       {category === "tv" && tv && (
         <div className={cn(maxWidth, "w-full mt-4 flex flex-col gap-4")}>
           {/* Season Selector */}
-          <div className="flex items-center gap-3">
-            <label
-              className={cn("text-sm", isDark ? "text-gray-200" : "text-gray-700")}
-            >
-              Season:
-            </label>
-            <select
-              value={selectedSeason}
-              onChange={(e) => {
-                setSelectedSeason(Number(e.target.value));
-                setSelectedEpisode(1); // reset episode when season changes
-              }}
-              className={cn(
-                "px-3 py-2 rounded border text-sm outline-none",
-                isDark
-                  ? "bg-gray-900 border-gray-700 text-gray-100 focus:border-secColor"
-                  : "bg-white border-gray-300 text-gray-800 focus:border-black"
-              )}
-            >
-              {Array.from({ length: tv.number_of_seasons || 1 }, (_, i) => i + 1).map(
-                (seasonNum) => (
-                  <option key={seasonNum} value={seasonNum}>
-                    Season {seasonNum}
-                  </option>
-                )
-              )}
-            </select>
+          <div className="flex flex-col gap-2">
+            <h1 className="text-dark dark:text-white my-2">Seasons</h1>
+            <div className="flex overflow-x-auto gap-2 pb-1">
+              {tv?.seasons
+                ?.filter((season: { name: string; }) => !season.name.toLowerCase().includes("special")) // skip specials
+                .map((season: any, index: number) => (
+                  <button
+                    key={season.id || index}
+                    onClick={() => {
+                      setSelectedSeason(season.season_number);
+                      setSelectedEpisode(1); // reset episode
+                    }}
+                    className={cn(
+                      "my-2 flex-shrink-0 flex flex-col items-center justify-center px-4 py-2 rounded-full border text-sm whitespace-nowrap transition-all duration-150",
+                      "hover:shadow-lg hover:-translate-y-0.5 hover:border-[#00ff08] dark:hover:border-[#00ff08]",
+                      "bg-white dark:bg-[#141414]",
+
+                      season.season_number === selectedSeason
+                        ? "border-slate-900 dark:border-white text-slate-900 dark:text-white"
+                        : "border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400"
+                    )}
+                  >
+                    <span className="font-medium">Season {index + 1}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {season.episode_count} Episodes
+                    </span>
+                  </button>
+                ))}
+            </div>
           </div>
           {/* Episode Grid */}
-          <div>
-            <h4 className={cn("mb-2 text-sm font-semibold", isDark ? "text-gray-200" : "text-gray-800")}>
-              Episodes:
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <h1 className="text-dark dark:text-white">Episodes</h1>
+          <div className="h-screen overflow-y-auto pr-2 w-full">
+            <ul className="space-y-4">
               {seasonData?.episodes?.map((ep: any) => (
-              <button
-                key={ep.id}
-                onClick={() => setSelectedEpisode(ep.episode_number)}
-                className={cn(
-                  "px-3 py-2 rounded text-sm border w-full relative overflow-hidden",
-                  selectedEpisode === ep.episode_number
-                    ? isDark
-                      ? "bg-gray-700 text-white border-gray-700" // same as hover dark
-                      : "bg-gray-200 text-gray-900 border-gray-200" // same as hover light
-                    : isDark
-                    ? "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700"
-                    : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200"
-                )}
-              >
-                <span className="inline-block whitespace-nowrap hover:animate-scroll-text" title={(ep.name && !ep.name.toLowerCase().startsWith("episode") ? ep.episode_number + ". " + ep.name : `Episode ${ep.episode_number}`)}>
-                  {ep.name && !ep.name.toLowerCase().startsWith("episode")
-                    ? ep.episode_number + ". " + ep.name
-                    : `Episode ${ep.episode_number}`}
-                </span>
-              </button>
+                <li
+                  key={ep.id}
+                  className={cn(
+                    "w-full rounded-xl border p-3 mt-1 shadow-sm transition-all duration-150 hover:shadow-lg hover:-translate-y-0.5 hover:border-[#00ff08]/60",
+                    "bg-white dark:bg-[#000000]",
+
+                    selectedEpisode === ep.episode_number
+                      ? "border-black dark:border-[#ffffff] dark:hover:border-[#00ff08]"
+                      : "border-transparent"
+                  )}
+                >
+                  <button
+                    onClick={() => setSelectedEpisode(ep.episode_number)}
+                    className={cn(
+                      "w-full flex flex-col md:flex-row gap-3 md:gap-4 items-center md:items-start text-center md:text-left rounded overflow-hidden",
+                      selectedEpisode === ep.episode_number
+                        ? isDark
+                          ? "text-white"
+                          : "text-gray-900"
+                        : isDark
+                        ? "text-gray-200"
+                        : "text-gray-800"
+                    )}
+                  >
+                    {/* Image */}
+                    <div className="relative flex-none w-full sm:w-64 md:w-48 lg:w-56 h-64 sm:h-48 md:h-36 lg:h-44 overflow-hidden rounded-lg bg-slate-200">
+                      {/* Rating top-left */}
+                      <div className="absolute top-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-md">
+                        ⭐ {ep.vote_average.toFixed(1)}
+                      </div>
+
+                      {/* Runtime top-right */}
+                      {ep.runtime ? (
+                        <div className="absolute top-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-md flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            className="w-3 h-3 mr-1"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="9"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              fill="none"
+                            />
+                            <path
+                              d="M12 7v5l3 2"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              fill="none"
+                            />
+                          </svg>
+                          <span aria-label={`Runtime ${ep.runtime} minutes`}>
+                            {ep.runtime}m
+                          </span>
+                        </div>
+                      ) : null}
+
+                      <img
+                        src={`https://image.tmdb.org/t/p/original${ep.still_path}`}
+                        alt={ep.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    {/* Content */}
+                    <div className="flex-1 min-w-0 p-2 md:p-0 w-full md:w-auto">
+                      <h3
+                        className="font-semibold text-slate-900 dark:text-slate-100 truncate"
+                        style={{ fontSize: "18px" }}
+                      >
+                        <span
+                          className="inline-block whitespace-normal sm:whitespace-nowrap"
+                          title={
+                            ep.name && !ep.name.toLowerCase().startsWith("episode")
+                              ? `${ep.episode_number}. ${ep.name}`
+                              : `Episode ${ep.episode_number}`
+                          }
+                        >
+                          {ep.name && !ep.name.toLowerCase().startsWith("episode")
+                            ? ep.episode_number + ". " + ep.name
+                            : `Episode ${ep.episode_number}`}
+                        </span>
+                      </h3>
+                      <p
+                        className="mt-1 text-slate-700 dark:text-slate-300 leading-relaxed line-clamp-4 sm:line-clamp-3"
+                        style={{ fontSize: "14px" }}
+                      >
+                        {ep.overview}
+                      </p>
+                      <p className="mt-2 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          className="w-4 h-4 opacity-70 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                        >
+                          <rect x="3" y="4" width="18" height="18" rx="3" />
+                          <path d="M16 2v4M8 2v4M3 10h18" />
+                        </svg>
+                        <span>{formatDate(ep.air_date)}</span>
+                      </p>
+                    </div>
+                  </button>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       )}
@@ -357,10 +455,10 @@ const Detail = () => {
               )}
             </m.div>
           )}
-           {/* Casts */}
-           <div className="hidden lg:block">
-             <Casts casts={credits?.cast || []} />
-           </div>
+          {/* Casts */}
+          <div className="hidden lg:block">
+            <Casts casts={credits?.cast || []} />
+          </div>
          </m.div>
       </div>
       {/* Casts */}
@@ -370,13 +468,17 @@ const Detail = () => {
       {/* Trailer */}
       {trailer && (
         <div className="w-full flex flex-col items-center mt-3 mb-3">
-          <h3
-            className={`text-xl font-bold mb-3 text-center ${
-              isDark ? "text-gray-100" : "text-gray-900"
-            }`}
+          <m.h2
+            variants={fadeDown}
+            className={cn(
+              mainHeading,
+              `${
+                isDark ? "text-gray-100" : "text-gray-900"
+              } mb-3 md:max-w-[420px] will-change-transform motion-reduce:transform-none`
+            )}
           >
             Official Trailer
-          </h3>
+          </m.h2>
           <div className="aspect-video w-full max-w-[90vw] lg:max-w-[1150px] px-2">
             <iframe
               className="w-full h-full rounded-lg"
