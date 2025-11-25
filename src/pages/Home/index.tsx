@@ -31,8 +31,8 @@ const Home = () => {
     return <Error error="Unable to fetch the series! " />;
   }
 
-  const popularMovies = movie?.results.slice(0, 5);
-
+  const popularMovies = movie?.results?.slice(0, 5) || [];
+  
   return (
     <>
       <Hero movies={popularMovies} />

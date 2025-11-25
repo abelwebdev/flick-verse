@@ -15,7 +15,28 @@ export const tmdbApi = createApi({
   }),
   endpoints: (builder) => ({
     getTrendingMovies: builder.query({
-      query: () => `/trending/movie/week?language=en-US`,
+      queryFn: async (_arg, _queryApi, _extraOptions, fetchWithBQ) => {
+        const today = new Date();
+        let releasedMovies: any[] = [];
+        let page = 1;
+        let hasMore = true;
+        while (releasedMovies.length < 20 && hasMore) {
+          // Fetch a page of trending movies
+          const res: any = await fetchWithBQ(
+            `/trending/movie/week?language=en-US&page=${page}`
+          );
+          if (res.error) return { error: res.error };
+          const movies = res.data.results.filter(
+            (movie: any) => movie.release_date && new Date(movie.release_date) <= today
+          );
+          releasedMovies.push(...movies);
+          // If no more movies from API, stop
+          hasMore = res.data.page < res.data.total_pages;
+          page++;
+        }
+        // Return 20 movies
+        return { data: { results: releasedMovies.slice(0, 20) } };
+      },
     }),
     getTrendingTvSeries: builder.query({
       query: () => `/tv/popular?language=en-US&page=1`,
