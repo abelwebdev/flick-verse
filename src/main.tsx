@@ -7,6 +7,8 @@ import { ApiProvider } from "@reduxjs/toolkit/query/react";
 import { tmdbApi } from "@/services/TMDB";
 import GlobalContextProvider from "@/context/globalContext";
 import ThemeProvider from "@/context/themeContext";
+import "react-loading-skeleton/dist/skeleton.css";
+import "swiper/css";
 import App from "./App";
 import "./index.css";
 

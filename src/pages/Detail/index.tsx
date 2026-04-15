@@ -11,6 +11,7 @@ import { mainHeading, maxWidth, paragraph } from "@/styles";
 import { cn } from "@/utils/helper";
 import { useTheme } from "@/context/themeContext";
 import { getMovieServerUrls, getTvServerUrls, MovieServerUrlItem, TvServerUrlItem } from "@/utils/urls";
+import { getTmdbImageUrl } from "@/utils/tmdbImage";
 
 const Detail = () => {
   const { category, id } = useParams(); // params: movie | tv
@@ -144,7 +145,7 @@ const Detail = () => {
   const displayCountry = getCountryDisplay();
 
   const lightBackgroundStyle = {
-    backgroundImage: `linear-gradient(to top, rgba(255,255,255,0.96), rgba(255,255,255,0.92), rgba(255,255,255,0.85), rgba(255,255,255,0.6)), url('https://image.tmdb.org/t/p/original/${posterPath}'`,
+    backgroundImage: `linear-gradient(to top, rgba(255,255,255,0.96), rgba(255,255,255,0.92), rgba(255,255,255,0.85), rgba(255,255,255,0.6)), url('${getTmdbImageUrl(posterPath, "poster")}')`,
     backgroundPosition: "top",
     backgroundSize: "cover",
   } as const;
@@ -306,7 +307,7 @@ const Detail = () => {
                       ) : null}
 
                       <img
-                        src={`https://image.tmdb.org/t/p/original${ep.still_path}`}
+                        src={getTmdbImageUrl(ep.still_path, "still")}
                         alt={ep.name}
                         loading="lazy"
                         className="w-full h-full object-cover"

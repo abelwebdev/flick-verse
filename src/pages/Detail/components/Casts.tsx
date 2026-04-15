@@ -6,6 +6,7 @@ import { useTheme } from "@/context/themeContext";
 import { cn } from "@/utils/helper";
 import Image from "@/common/Image";
 import { useMotion } from "@/hooks/useMotion";
+import { getTmdbImageUrl } from "@/utils/tmdbImage";
 
 interface CastsProps {
   casts: {
@@ -55,7 +56,7 @@ const Casts: FC<CastsProps> = ({ casts }) => {
                 <Image
                   width={isNotMobile ? 64 : 40}
                   height={isNotMobile ? 96 : 54}
-                  src={`https://image.tmdb.org/t/p/original/${profilePath}`}
+                  src={getTmdbImageUrl(profilePath, "profile")}
                   alt={name}
                   className="object-cover rounded-md shadow-md"
                 />

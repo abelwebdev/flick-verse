@@ -4,6 +4,7 @@ import { m } from "framer-motion";
 import Image from "../Image";
 import { cn } from "@/utils/helper";
 import { useMotion } from "@/hooks/useMotion";
+import { getTmdbImageUrl } from "@/utils/tmdbImage";
 
 interface PosterPropsType {
   posterPath: string;
@@ -24,7 +25,7 @@ const Poster = ({ posterPath, title, className }: PosterPropsType) => {
         <Image
           width={300}
           height={450}
-          src={`https://image.tmdb.org/t/p/original/${posterPath}`}
+          src={getTmdbImageUrl(posterPath, "poster")}
           alt={title}
           className="object-cover rounded-xl shadow-lg w-full h-full"
         />

@@ -4,6 +4,7 @@ import favicon from "../../assets/svg/favicon.svg"
 import Image from "../Image";
 import { IMovie } from "@/types";
 import { useMediaQuery } from "usehooks-ts";
+import { getTmdbImageUrl } from "@/utils/tmdbImage";
 
 const MovieCard = ({
   movie,
@@ -69,7 +70,7 @@ const MovieCard = ({
         <Image
           height={!isMobile ? 300 : 260}
           width={200}
-          src={`https://image.tmdb.org/t/p/original/${poster_path}`}
+          src={getTmdbImageUrl(poster_path, "poster")}
           alt={primaryTitle}
           className="object-cover rounded-lg drop-shadow-md shadow-md group-hover:shadow-none group-hover:drop-shadow-none transition-all duration-300 ease-in-out"
           effect="zoomIn"

@@ -8,9 +8,6 @@ import {
   Loader,
 } from "@/common";
 
-import "react-loading-skeleton/dist/skeleton.css";
-import "swiper/css";
-
 const Catalog = lazy(() => import("./pages/Catalog"));
 const Home = lazy(() => import("./pages/Home"));
 const Detail = lazy(() => import("./pages/Detail"));

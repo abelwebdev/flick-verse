@@ -6,6 +6,7 @@ import { mainHeading, maxWidth, paragraph, watchBtn } from "@/styles";
 import { IMovie } from "@/types";
 import { cn } from "@/utils/helper";
 import { useMotion } from "@/hooks/useMotion";
+import { getTmdbImageUrl } from "@/utils/tmdbImage";
 
 const HeroSlide = ({ movie, logoPath }: { movie: IMovie, logoPath: string | null | undefined }) => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const HeroSlide = ({ movie, logoPath }: { movie: IMovie, logoPath: string | null
         {logoPath ? (
           <m.div variants={fadeDown} className="mb-2 mt-5">
             <img
-              src={`https://image.tmdb.org/t/p/original${logoPath}`}
+              src={getTmdbImageUrl(logoPath, "logo")}
               alt={title}
               className="max-w-full h-auto max-h-16 object-contain"
             />

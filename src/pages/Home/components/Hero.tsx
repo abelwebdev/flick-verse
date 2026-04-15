@@ -6,6 +6,7 @@ import HeroSlide from "./HeroSlide";
 import { useGlobalContext } from "@/context/globalContext";
 import { IMovie } from "@/types";
 import { useLazyGetMovieImagesQuery } from "@/services/TMDB";
+import { getTmdbImageUrl } from "@/utils/tmdbImage";
 
 const Hero = ({ movies }: { movies: IMovie[] }) => {
   const { isModalOpen } = useGlobalContext();
@@ -58,12 +59,11 @@ const Hero = ({ movies }: { movies: IMovie[] }) => {
 
   useEffect(() => {
     // Preload all discovered logo images to warm the cache
-    const baseUrl = "https://image.tmdb.org/t/p/original";
     Object.values(logoPathByMovieId).forEach((relativePath) => {
       if (!relativePath) return;
       const img = new Image();
       img.decoding = "async";
-      img.src = `${baseUrl}${relativePath}`;
+      img.src = getTmdbImageUrl(relativePath, "logo");
     });
   }, [logoPathByMovieId]);
 
@@ -85,7 +85,8 @@ const Hero = ({ movies }: { movies: IMovie[] }) => {
             key={movie.id}
             style={{
               backgroundImage: `
-              linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.5)),url('https://image.tmdb.org/t/p/original/${movie.backdrop_path}'`,
+              linear-gradient(to top, rgba(0,0,0,0.6), rgba(0,0,0,0.5)),url('${getTmdbImageUrl(movie.backdrop_path, "backdrop")}')
+              `,
               backgroundPosition: "center",
               backgroundSize: "cover",
             }}
