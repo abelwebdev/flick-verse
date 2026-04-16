@@ -2,6 +2,41 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import { API_BEARER } from "@/utils/config";
 
+type MediaCategory = "movie" | "tv";
+
+interface DiscoverFilters {
+  genre?: string;
+  rating?: string;
+  votes?: string;
+  year?: string;
+  sortBy?: string;
+}
+
+const buildDiscoverQuery = (
+  category: MediaCategory,
+  page: number,
+  filters: DiscoverFilters = {}
+) => {
+  const params = new URLSearchParams({
+    language: "en-US",
+    page: String(page),
+    sort_by: filters.sortBy || "popularity.desc",
+  });
+
+  if (filters.genre) params.set("with_genres", filters.genre);
+  if (filters.rating) params.set("vote_average.gte", filters.rating);
+  if (filters.votes) params.set("vote_count.gte", filters.votes);
+
+  if (filters.year) {
+    params.set(
+      category === "movie" ? "primary_release_year" : "first_air_date_year",
+      filters.year
+    );
+  }
+
+  return `/discover/${category}?${params.toString()}`;
+};
+
 export const tmdbApi = createApi({
   reducerPath: "tmdbApi",
   baseQuery: fetchBaseQuery({
@@ -53,11 +88,25 @@ export const tmdbApi = createApi({
     getContent: builder.query({
       query: ({ category, page }: { category: string; page: number }) => `/${category}/popular?language=en-US&page=${page}`,
     }),
+    getMovieGenres: builder.query({
+      query: () => `/genre/movie/list?language=en-US`,
+    }),
+    getTvGenres: builder.query({
+      query: () => `/genre/tv/list?language=en-US`,
+    }),
     getMovieSearch: builder.query({
       query: ({ query, page = 1 }: { query: string; page?: number }) =>  `/search/movie?query=${encodeURIComponent(query)}&language=en-US&page=${page}`,
     }),
     getTvSearch: builder.query({
       query: ({ query, page = 1 }: { query: string; page?: number }) => `/search/tv?query=${encodeURIComponent(query)}&language=en-US&page=${page}`,
+    }),
+    getMovieDiscover: builder.query({
+      query: ({ page = 1, filters = {} }: { page?: number; filters?: DiscoverFilters }) =>
+        buildDiscoverQuery("movie", page, filters),
+    }),
+    getTvDiscover: builder.query({
+      query: ({ page = 1, filters = {} }: { page?: number; filters?: DiscoverFilters }) =>
+        buildDiscoverQuery("tv", page, filters),
     }),
     getVideos: builder.query<any, { category: string; id: number }>({
       query: ({ category, id }) => `/${category}/${id}/videos`,
@@ -68,4 +117,4 @@ export const tmdbApi = createApi({
   }),
 });
 
-export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery, useGetVideosQuery, useGetMovieImagesQuery, useLazyGetMovieImagesQuery } = tmdbApi;
+export const { useGetTrendingMoviesQuery, useGetTrendingTvSeriesQuery, useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetContentQuery, useGetMovieGenresQuery, useGetTvGenresQuery, useGetMovieSearchQuery, useGetTvSearchQuery, useGetMovieDiscoverQuery, useGetTvDiscoverQuery, useGetVideosQuery, useGetMovieImagesQuery, useLazyGetMovieImagesQuery } = tmdbApi;

@@ -1,12 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
+
 import { MovieCard, SkelatonLoader } from "@/common";
 import { CatalogHeader, Search } from "./components";
-import { useGetContentQuery, useGetMovieSearchQuery, useGetTvSearchQuery } from "@/services/TMDB";
+import {
+  useGetContentQuery,
+  useGetMovieDiscoverQuery,
+  useGetMovieSearchQuery,
+  useGetTvDiscoverQuery,
+  useGetTvSearchQuery,
+} from "@/services/TMDB";
 import { smallMaxWidth } from "@/styles";
 import { IMovie } from "@/types";
 import { cn } from "@/utils/helper";
+
+const DEFAULT_SORT = "popularity.desc";
 
 const Catalog = () => {
   const [page, setPage] = useState(1);
@@ -15,68 +24,174 @@ const Catalog = () => {
   const [query, setQuery] = useSearchParams();
   const { category } = useParams();
 
+  const mediaCategory = category === "tv" ? "tv" : "movie";
+  const isMovieCategory = mediaCategory === "movie";
+
   const searchQuery = query.get("search") || "";
+  const genreFilter = query.get("genre") || "";
+  const yearFilter = query.get("year") || "";
+  const sortParam = query.get("sort") || "";
+  const sortFilter = sortParam || DEFAULT_SORT;
 
-
-  // Use search query if it exists
   const shouldUseSearch = Boolean(searchQuery);
-  const isMovieCategory = category !== "tv";
-  
-  const { data: contentData, isLoading: isContentLoading, isFetching: isContentFetching } = useGetContentQuery({
-    category: category === "tv" ? "tv" : "movie",
-    page,
-  }, {
-    skip: shouldUseSearch, // Skip this query if we're searching
-  });
+  const shouldUseDiscover =
+    !shouldUseSearch &&
+    Boolean(genreFilter || yearFilter || sortParam);
 
-  const { data: movieSearchData, isLoading: isMovieSearchLoading, isFetching: isMovieSearchFetching } = useGetMovieSearchQuery({
-    query: searchQuery,
-    page,
-  }, {
-    skip: !shouldUseSearch || !isMovieCategory, // Skip if not searching or not movies
-  });
+  const discoverFilters = useMemo(
+    () => ({
+      genre: genreFilter,
+      year: yearFilter,
+      sortBy: sortFilter,
+    }),
+    [genreFilter, yearFilter, sortFilter]
+  );
 
-  const { data: tvSearchData, isLoading: isTvSearchLoading, isFetching: isTvSearchFetching } = useGetTvSearchQuery({
-    query: searchQuery,
-    page,
-  }, {
-    skip: !shouldUseSearch || isMovieCategory, // Skip if not searching or not TV
-  });
+  const { data: contentData, isLoading: isContentLoading, isFetching: isContentFetching } = useGetContentQuery(
+    {
+      category: mediaCategory,
+      page,
+    },
+    {
+      skip: shouldUseSearch || shouldUseDiscover,
+    }
+  );
 
-  // Use the appropriate data and loading states
-  const data = shouldUseSearch 
-    ? (isMovieCategory ? movieSearchData : tvSearchData)
-    : contentData;
-  const isLoading = shouldUseSearch 
-    ? (isMovieCategory ? isMovieSearchLoading : isTvSearchLoading)
-    : isContentLoading;
-  const isFetching = shouldUseSearch 
-    ? (isMovieCategory ? isMovieSearchFetching : isTvSearchFetching)
-    : isContentFetching;
+  const { data: movieSearchData, isLoading: isMovieSearchLoading, isFetching: isMovieSearchFetching } =
+    useGetMovieSearchQuery(
+      {
+        query: searchQuery,
+        page,
+      },
+      {
+        skip: !shouldUseSearch || !isMovieCategory,
+      }
+    );
+
+  const { data: tvSearchData, isLoading: isTvSearchLoading, isFetching: isTvSearchFetching } =
+    useGetTvSearchQuery(
+      {
+        query: searchQuery,
+        page,
+      },
+      {
+        skip: !shouldUseSearch || isMovieCategory,
+      }
+    );
+
+  const { data: movieDiscoverData, isLoading: isMovieDiscoverLoading, isFetching: isMovieDiscoverFetching } =
+    useGetMovieDiscoverQuery(
+      {
+        page,
+        filters: discoverFilters,
+      },
+      {
+        skip: !shouldUseDiscover || !isMovieCategory,
+      }
+    );
+
+  const { data: tvDiscoverData, isLoading: isTvDiscoverLoading, isFetching: isTvDiscoverFetching } =
+    useGetTvDiscoverQuery(
+      {
+        page,
+        filters: discoverFilters,
+      },
+      {
+        skip: !shouldUseDiscover || isMovieCategory,
+      }
+    );
+
+  const data = shouldUseSearch
+    ? isMovieCategory
+      ? movieSearchData
+      : tvSearchData
+    : shouldUseDiscover
+      ? isMovieCategory
+        ? movieDiscoverData
+        : tvDiscoverData
+      : contentData;
+
+  const isLoading = shouldUseSearch
+    ? isMovieCategory
+      ? isMovieSearchLoading
+      : isTvSearchLoading
+    : shouldUseDiscover
+      ? isMovieCategory
+        ? isMovieDiscoverLoading
+        : isTvDiscoverLoading
+      : isContentLoading;
+
+  const isFetching = shouldUseSearch
+    ? isMovieCategory
+      ? isMovieSearchFetching
+      : isTvSearchFetching
+    : shouldUseDiscover
+      ? isMovieCategory
+        ? isMovieDiscoverFetching
+        : isTvDiscoverFetching
+      : isContentFetching;
+
+  const visibleResults = useMemo(() => {
+    const results = ([...(data?.results || [])] as IMovie[]).filter((item) => {
+      const matchesGenre = !genreFilter || item.genre_ids?.includes(Number(genreFilter));
+      const releaseDate = item.release_date || item.first_air_date || "";
+      const matchesYear = !yearFilter || releaseDate.startsWith(yearFilter);
+
+      return matchesGenre && matchesYear;
+    });
+
+    const dateField = isMovieCategory ? "release_date" : "first_air_date";
+
+    const sortedResults = [...results].sort((a, b) => {
+      switch (sortParam) {
+        case "vote_average.desc":
+          return (b.vote_average ?? 0) - (a.vote_average ?? 0);
+        case "vote_count.desc":
+          return (b.vote_count ?? 0) - (a.vote_count ?? 0);
+        case "primary_release_date.desc":
+        case "first_air_date.desc":
+          return String(b[dateField as keyof IMovie] || "").localeCompare(String(a[dateField as keyof IMovie] || ""));
+        case DEFAULT_SORT:
+        case "":
+        default:
+          return (b.popularity ?? 0) - (a.popularity ?? 0);
+      }
+    });
+
+    return sortedResults;
+  }, [data?.results, genreFilter, isMovieCategory, sortParam, yearFilter]);
 
   useEffect(() => {
-    setPage(1); // Reset to page 1 when category or search changes
+    setPage(1);
     setIsCategoryChanged(true);
-    setShows([]); // Clear current shows when switching categories or search
-  }, [category, searchQuery]);
+    setShows([]);
+  }, [category, searchQuery, genreFilter, yearFilter, sortParam]);
 
   useEffect(() => {
     if (isLoading || isFetching) return;
-    if (data?.results) {
+    if (visibleResults?.length) {
       if (page > 1) {
-        setShows((prev) => [...prev, ...data.results]);
+        setShows((prev) => [...prev, ...visibleResults]);
       } else {
-        setShows([...data.results]);
+        setShows([...visibleResults]);
         setIsCategoryChanged(false);
       }
+      return;
     }
-  }, [data, isFetching, isLoading, page]);
+
+    if (page === 1) {
+      setShows([]);
+      setIsCategoryChanged(false);
+    }
+  }, [isFetching, isLoading, page, visibleResults]);
+
+  const hasActiveFilters = Boolean(searchQuery || genreFilter || yearFilter || sortParam);
 
   return (
     <>
       <CatalogHeader category={String(category)} />
       <section className={cn(smallMaxWidth, "lg:mt-12 md:mt-8 sm:mt-6 xs:mt-4 mt-2")}>
-        <Search setQuery={setQuery}/>
+        <Search setQuery={setQuery} />
         {isLoading || isCategoryChanged ? (
           <SkelatonLoader isMoviesSliderLoader={false} />
         ) : shows?.length > 0 ? (
@@ -90,14 +205,13 @@ const Catalog = () => {
               </div>
             ))}
           </div>
-          
-        ) : searchQuery ? (
+        ) : hasActiveFilters ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="text-gray-500 dark:text-gray-400 text-lg mb-2">
-              No results found for "{searchQuery}"
+              No results found for the current search and filters.
             </div>
             <div className="text-gray-400 dark:text-gray-500 text-sm">
-              Try searching with different keywords or browse {category === "tv" ? "Movies" : "TV series"} instead.
+              Try loosening the genre, rating, or year filters and search again.
             </div>
           </div>
         ) : (
@@ -109,7 +223,10 @@ const Catalog = () => {
         )}
         {isFetching && !isCategoryChanged ? (
           <div className="my-4">
-            <FaSpinner className="mx-auto dark:text-gray-300 w-5 h-5 animate-spin" style={{color: "#73f340"}} />
+            <FaSpinner
+              className="mx-auto dark:text-gray-300 w-5 h-5 animate-spin"
+              style={{ color: "#73f340" }}
+            />
           </div>
         ) : shows?.length > 0 ? (
           <div className="w-full flex items-center justify-center">
