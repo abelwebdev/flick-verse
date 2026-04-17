@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { m } from "framer-motion";
 import { useParams } from "react-router-dom";
 
-import { Poster, Loader, Error } from "@/common";
+import { Poster, Loader, Error, MovieCard } from "@/common";
 import { Casts, Genre } from "./components";
 
-import { useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetVideosQuery } from "@/services/TMDB";
+import { useGetMovieQuery, useGetTvQuery, useGetSeasonEpisodesQuery, useGetVideosQuery, useGetSimilarQuery } from "@/services/TMDB";
 import { useMotion } from "@/hooks/useMotion";
 import { mainHeading, maxWidth, paragraph } from "@/styles";
 import { cn } from "@/utils/helper";
@@ -52,10 +52,15 @@ const Detail = () => {
     { category: category as string, id: Number(id) },
     { skip: !category }
   );
+  const { data: similarData } = useGetSimilarQuery(
+    { category: category as string, id: Number(id) },
+    { skip: !category || !id }
+  );
 
   const trailer = videos?.results?.find(
     (v: any) => v.type === "Trailer" && v.site === "YouTube"
   );
+  const similarItems = (similarData?.results || []).slice(0, 10);
 
   // Pick correct data source
   const media = category === "movie" ? movie : tv;
@@ -488,6 +493,32 @@ const Detail = () => {
               allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
+          </div>
+        </div>
+      )}
+      {/* Similar */}
+      {similarItems.length > 0 && (
+        <div className={cn(maxWidth, "w-full mt-6 md:mt-8 pb-4")}>
+          <m.h2
+            variants={fadeDown}
+            className={cn(
+              mainHeading,
+              `${isDark ? "text-gray-100" : "text-gray-900"} mb-3 text-center md:max-w-[420px] mx-auto will-change-transform motion-reduce:transform-none`
+            )}
+          >
+            Similar {category === "tv" ? "TV Series" : "Movies"}
+          </m.h2>
+          <div className="flex flex-wrap gap-4 sm:gap-6 md:gap-8 lg:gap-10 justify-center">
+            {similarItems.map((item: any) => {
+              return (
+                <div
+                  key={item.id}
+                  className="flex flex-col shrink-0 gap-4 xs:gap-2 md:gap-2 w-[200px] rounded-lg"
+                >
+                  <MovieCard movie={item} category={String(category)} />
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
