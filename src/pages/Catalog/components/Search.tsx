@@ -85,13 +85,13 @@ const Search: React.FC<SearchProps> = ({ setQuery }) => {
       className="text-[14px] lg:py-10 md:pt-9 md:pb-10 sm:pt-8 sm:pb-10 pt-6 pb-8 flex justify-center"
       onSubmit={handleSubmit}
     >
-      <div className="w-full max-w-5xl rounded-[28px] border border-white/30 bg-white/75 p-4 shadow-[0_16px_45px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-gradient-to-b dark:from-[#23212b]/95 dark:to-[#1a1821]/95 sm:p-5">
+      <div className="w-full max-w-5xl rounded-[28px] border border-white/30 bg-white/75 p-4 shadow-[0_16px_45px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-gradient-to-b dark:from-[#17151f] dark:to-[#0f0d14] sm:p-5">
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-3 md:flex-row md:items-center">
             <div className="relative flex-1">
               <input
                 type="text"
-                className="w-full rounded-full border border-gray-300 bg-white/85 py-[7px] pl-5 pr-10 font-medium text-gray-700 outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-[#73f340] focus:bg-white dark:border-white/10 dark:bg-[#2f2c39] dark:text-gray-100 dark:placeholder:text-gray-400 dark:focus:bg-[#393545]"
+                className="w-full rounded-full border border-gray-300 bg-white/85 py-[7px] pl-5 pr-10 font-medium text-gray-700 outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-[#73f340] focus:bg-white dark:border-white/10 dark:bg-[#201d2a] dark:text-gray-100 dark:placeholder:text-gray-400 dark:focus:bg-[#2b2737]"
                 onChange={(e) => setSearch(e.target.value)}
                 value={search}
                 placeholder={`Search ${isTvCategory ? "TV series" : "movies"}`}
@@ -110,7 +110,7 @@ const Search: React.FC<SearchProps> = ({ setQuery }) => {
                 type="button"
                 onClick={() => setIsFiltersOpen((prev) => !prev)}
                 aria-expanded={isFiltersOpen}
-                className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-4 py-[9px] text-[13px] font-semibold text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#73f340] hover:bg-white dark:border-white/10 dark:bg-[#2f2c39] dark:text-gray-100 dark:hover:bg-[#393545]"
+                className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-4 py-[9px] text-[13px] font-semibold text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#73f340] hover:bg-black dark:border-white/10 dark:bg-[#201d2a] dark:text-gray-100 dark:hover:bg-[#2b2737]"
               >
                 <FiFilter className="text-[15px]" />
                 Filters
@@ -123,7 +123,7 @@ const Search: React.FC<SearchProps> = ({ setQuery }) => {
                 <button
                   type="button"
                   onClick={handleClearSearch}
-                  className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/80 px-4 py-[9px] text-[13px] font-semibold text-gray-600 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#73f340] hover:bg-white hover:text-gray-900 dark:border-white/10 dark:bg-[#2f2c39] dark:text-gray-300 dark:hover:bg-[#393545] dark:hover:text-white"
+                  className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/80 px-4 py-[9px] text-[13px] font-semibold text-gray-600 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#73f340] hover:bg-black hover:text-gray-900 dark:border-white/10 dark:bg-[#201d2a] dark:text-gray-300 dark:hover:bg-[#2b2737] dark:hover:text-white"
                 >
                   Clear all
                 </button>
@@ -140,18 +140,20 @@ const Search: React.FC<SearchProps> = ({ setQuery }) => {
                 transition={{ duration: 0.22, ease: "easeOut" }}
                 className="overflow-hidden"
               >
-                <div className="mt-1 rounded-[24px] border border-white/25 bg-white/70 p-4 shadow-[0_12px_30px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-[#211f29]/95">
+                <div className="mt-1 rounded-[24px] border border-white/25 bg-white/70 p-4 shadow-[0_12px_30px_rgba(0,0,0,0.05)] dark:border-white/10 dark:bg-[#16141d]">
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     <label className="flex flex-col gap-2 text-[12px] font-semibold uppercase tracking-[0.12em] text-gray-500 dark:text-gray-300">
                       Genre
                       <select
                         value={genre}
                         onChange={(e) => setGenre(e.target.value)}
-                        className="w-full rounded-2xl border border-gray-300 bg-white/85 px-4 py-3 text-sm font-medium text-gray-700 outline-none transition-all duration-200 focus:border-[#73f340] dark:border-white/10 dark:bg-[#2f2c39] dark:text-gray-100"
+                        className="w-full rounded-2xl border border-gray-300 bg-white/85 px-4 py-3 text-sm font-medium text-gray-700 outline-none transition-all duration-200 focus:border-[#73f340] dark:border-white/10 dark:bg-[#201d2a] dark:text-gray-100 dark:[color-scheme:dark]"
                       >
-                        <option value="">All genres</option>
+                        <option value="" className="bg-white text-gray-700 dark:bg-black dark:text-gray-100">
+                          All genres
+                        </option>
                         {genres.map((item: { id: number; name: string }) => (
-                          <option key={item.id} value={item.id}>
+                          <option key={item.id} value={item.id} className="bg-white text-gray-700 dark:bg-black dark:text-gray-100">
                             {item.name}
                           </option>
                         ))}
@@ -168,7 +170,7 @@ const Search: React.FC<SearchProps> = ({ setQuery }) => {
                         value={year}
                         onChange={(e) => setYear(e.target.value)}
                         placeholder="2024"
-                        className="w-full rounded-2xl border border-gray-300 bg-white/85 px-4 py-3 text-sm font-medium text-gray-700 outline-none transition-all duration-200 focus:border-[#73f340] dark:border-white/10 dark:bg-[#2f2c39] dark:text-gray-100"
+                        className="w-full rounded-2xl border border-gray-300 bg-white/85 px-4 py-3 text-sm font-medium text-gray-700 outline-none transition-all duration-200 focus:border-[#73f340] dark:border-white/10 dark:bg-[#201d2a] dark:text-gray-100"
                       />
                     </label>
 
@@ -177,12 +179,20 @@ const Search: React.FC<SearchProps> = ({ setQuery }) => {
                       <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
-                        className="w-full rounded-2xl border border-gray-300 bg-white/85 px-4 py-3 text-sm font-medium text-gray-700 outline-none transition-all duration-200 focus:border-[#73f340] dark:border-white/10 dark:bg-[#2f2c39] dark:text-gray-100"
+                        className="w-full rounded-2xl border border-gray-300 bg-white/85 px-4 py-3 text-sm font-medium text-gray-700 outline-none transition-all duration-200 focus:border-[#73f340] dark:border-white/10 dark:bg-[#201d2a] dark:text-gray-100 dark:[color-scheme:dark]"
                       >
-                        <option value="popularity.desc">Popularity</option>
-                        <option value="vote_average.desc">Top rated</option>
-                        <option value="vote_count.desc">Most voted</option>
-                        <option value={newestSortValue}>Newest first</option>
+                        <option value="popularity.desc" className="bg-white text-gray-700 dark:bg-black dark:text-gray-100">
+                          Popularity
+                        </option>
+                        <option value="vote_average.desc" className="bg-white text-gray-700 dark:bg-black dark:text-gray-100">
+                          Top rated
+                        </option>
+                        <option value="vote_count.desc" className="bg-white text-gray-700 dark:bg-black dark:text-gray-100">
+                          Most voted
+                        </option>
+                        <option value={newestSortValue} className="bg-white text-gray-700 dark:bg-black dark:text-gray-100">
+                          Newest first
+                        </option>
                       </select>
                     </label>
                   </div>
@@ -196,7 +206,7 @@ const Search: React.FC<SearchProps> = ({ setQuery }) => {
                       <button
                         type="button"
                         onClick={handleClearSearch}
-                        className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/85 px-5 py-3 text-sm font-semibold text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#73f340] hover:bg-white dark:border-white/10 dark:bg-[#2a2734] dark:text-gray-200 dark:hover:bg-[#363244]"
+                        className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/85 px-5 py-3 text-sm font-semibold text-gray-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#73f340] hover:bg-black dark:border-white/10 dark:bg-[#1c1925] dark:text-gray-200 dark:hover:bg-[#2a2636]"
                       >
                         Reset
                       </button>
