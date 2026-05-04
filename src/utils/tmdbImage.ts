@@ -4,7 +4,7 @@ const TMDB_BASE_URL = "https://image.tmdb.org/t/p";
 
 const TMDB_IMAGE_SIZES: Record<TmdbImageType, string> = {
   poster: "w500",
-  backdrop: "w1280",
+  backdrop: "original",
   profile: "w185",
   logo: "w500",
   still: "w300",
