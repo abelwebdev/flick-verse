@@ -11,10 +11,10 @@
 
   export const getMovieServerUrls = (id: number | string): MovieServerUrlItem[] => [
     { key: "vidlink", name: "Server 1", url: `https://vidlink.pro/movie/${id}?autoplay=false` },
-    { key: "vidsrc", name: "Server 2", url: `https://vidsrc.icu/embed/movie/${id}?autoplay=1&muted=1` },
+    { key: "vidsrc", name: "Server 2", url: `https://vidsrcme.su/embed/movie/${id}?autoplay=1&muted=1` },
     { key: "2embed", name: "Server 3", url: `https://2embed.cc/embed/${id}` },
     { key: "multiembed", name: "Server 4", url: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-    { key: "moviesapi", name: "Server 5", url: `https://moviesapi.club/movie/${id}` },
+    { key: "moviesapi", name: "Server 5", url: `https://moviesapi.to/movie/${id}` },
     { key: "autoembed", name: "Server 6", url: `https://autoembed.co/movie/tmdb/${id}` },
   ];
 
@@ -31,7 +31,7 @@
     {
       key: "vidsrc",
       name: "Server 2",
-      url: `https://vidsrc.icu/embed/tv/${id}/${season}/${episode}?autoplay=1&muted=1`,
+      url: `https://vidsrcme.su/embed/tv/${id}/${season}/${episode}?autoplay=1&muted=1`,
     },
     {
       key: "2embed",
@@ -46,7 +46,7 @@
     {
       key: "moviesapi",
       name: "Server 5",
-      url: `https://moviesapi.club/tv/${id}-${season}-${episode}`,
+      url: `https://moviesapi.to/tv/${id}-${season}-${episode}`,
     },
     {
       key: "autoembed",
