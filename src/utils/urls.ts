@@ -16,6 +16,7 @@
     { key: "multiembed", name: "Server 4", url: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
     { key: "moviesapi", name: "Server 5", url: `https://moviesapi.to/movie/${id}` },
     { key: "autoembed", name: "Server 6", url: `https://autoembed.co/movie/tmdb/${id}` },
+    { key: "videasy", name: "Server 7", url: `https://player.videasy.net/movie/${id}` }
   ];
 
   export const getTvServerUrls = (
@@ -53,4 +54,9 @@
       name: "Server 6",
       url: `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}`,
     },
+    {
+      key: "videasy",
+      name: "Server 7",
+      url: `https://player.videasy.net/tv/${id}/${season}/${episode}`,
+    }
   ];
