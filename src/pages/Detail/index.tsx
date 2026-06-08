@@ -93,10 +93,14 @@ const Detail = () => {
   }, [media?.title, media?.name]);
   useEffect(() => {
     if (category === "tv" && id) {
-      const tvServers = getTvServerUrls(String(id), selectedSeason, selectedEpisode);
-      setActiveServerKey(tvServers[0]?.key || "vidsrc");
+      const tvServers = getTvServerUrls(String(id), selectedSeason, 1);
+      setActiveServerKey((currentKey) =>
+        tvServers.some((server) => server.key === currentKey)
+          ? currentKey
+          : tvServers[0]?.key || "vidsrc"
+      );
     }
-  }, [id, category, selectedSeason, selectedEpisode]);
+  }, [id, category, selectedSeason]);
 
   // Loading & Error states
   if (isMovieLoading || isTvLoading || isMovieFetching || isTvFetching) {
