@@ -80,9 +80,28 @@ export const tmdbApi = createApi({
       query: ({ id }: { id: number }) =>
         `/movie/${id}?language=en-US&append_to_response=credits,release_dates`,
     }),
-    getTv: builder.query({
-      query: ({ id }: { id: number }) =>
-        `/tv/${id}?language=en-US&append_to_response=credits,content_ratings`,
+    getTv: builder.query<Record<string, any>, { id: number }>({
+      queryFn: async ({ id }: { id: number }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const [tvRes, creditsRes, ratingsRes] = await Promise.all([
+          fetchWithBQ(`/tv/${id}?language=en-US`),
+          fetchWithBQ(`/tv/${id}/credits?language=en-US`),
+          fetchWithBQ(`/tv/${id}/content_ratings`),
+        ]);
+
+        if (tvRes.error) return { error: tvRes.error };
+
+        const tvData = tvRes.data as Record<string, any>;
+        const creditsData = creditsRes.error ? undefined : (creditsRes.data as Record<string, any>);
+        const ratingsData = ratingsRes.error ? undefined : (ratingsRes.data as Record<string, any>);
+
+        return {
+          data: {
+            ...tvData,
+            ...(creditsData || {}),
+            content_ratings: ratingsData,
+          },
+        };
+      },
     }),
     getSeasonEpisodes: builder.query({
       query: ({ id, season_number }: { id: string; season_number: number }) => `/tv/${id}/season/${season_number}?language=en-US`,
