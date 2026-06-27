@@ -77,10 +77,12 @@ export const tmdbApi = createApi({
       query: () => `/tv/popular?language=en-US&page=1`,
     }),
     getMovie: builder.query({
-      query: ({ id }: { id: number }) => `/movie/${id}?language=en-US&append_to_response=credits`,
+      query: ({ id }: { id: number }) =>
+        `/movie/${id}?language=en-US&append_to_response=credits,release_dates`,
     }),
     getTv: builder.query({
-      query: ({ id }: { id: number }) => `/tv/${id}?language=en-US&append_to_response=credits`,
+      query: ({ id }: { id: number }) =>
+        `/tv/${id}?language=en-US&append_to_response=credits,content_ratings`,
     }),
     getSeasonEpisodes: builder.query({
       query: ({ id, season_number }: { id: string; season_number: number }) => `/tv/${id}/season/${season_number}?language=en-US`,

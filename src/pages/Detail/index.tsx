@@ -122,6 +122,8 @@ const Detail = () => {
     release_date,
     first_air_date,
     episode_run_time,
+    release_dates,
+    content_ratings,
     production_countries = [],
     origin_country = [],
 
@@ -137,6 +139,30 @@ const Detail = () => {
       : undefined;
 
   const displayRating = typeof vote_average === "number" ? vote_average.toFixed(1) : undefined;
+
+  const displayMpaRating = (() => {
+    if (category === "movie") {
+      const results = release_dates?.results || [];
+      const candidateReleaseDate =
+        results.find((item: any) => item.iso_3166_1 === "US")
+          ?.release_dates?.find((item: any) => item.certification) ||
+        results.flatMap((item: any) => item.release_dates || []).find(
+          (item: any) => item.certification
+        );
+      return candidateReleaseDate?.certification || undefined;
+    }
+
+    if (category === "tv") {
+      const results = content_ratings?.results || [];
+      return (
+        results.find((item: any) => item.iso_3166_1 === "US")?.rating ||
+        results.find((item: any) => item.rating)?.rating ||
+        undefined
+      );
+    }
+
+    return undefined;
+  })();
 
   const getCountryDisplay = () => {
     if (category === "movie" && production_countries?.length > 0) {
@@ -424,7 +450,11 @@ const Detail = () => {
             )}
           </m.p>
           {/* Extra info */}
-          {(runtimeMinutes || displayRating || displayYear || displayCountry) && (
+          {(runtimeMinutes ||
+            displayRating ||
+            displayMpaRating ||
+            displayYear ||
+            displayCountry) && (
             <m.div
               className={`text-sm ${
                 isDark ? "text-gray-200" : "text-gray-700"
@@ -441,6 +471,12 @@ const Detail = () => {
                   <m.span className="font-semibold">Rating:</m.span>
                   <m.span className="text-yellow-400">★</m.span>
                   {displayRating}
+                </m.span>
+              )}
+              {displayMpaRating && (
+                <m.span>
+                  <span className="font-semibold">Content Rating:</span>{" "}
+                  {displayMpaRating}
                 </m.span>
               )}
               {displayYear && (
